@@ -1,0 +1,369 @@
+* PLATE
+** interface
+rcp user@host:/path/to/remote/file /tmp/tramp.4711
+     TRAMP
+*** window-managery do emacsa
+**** window-layout:
+(setq wm ; <-- window management object
+      (wlf:layout 
+       '(| (:left-size-ratio 0.3) 
+           folder 
+           (- (:upper-max-size 15) 
+              summary 
+              message))
+       '((:name folder 
+          :buffer "folder buffer")
+         (:name summary
+          :buffer "summary buffer")
+         (:name message
+          :buffer "message buffer")
+        )))
+
+;; Window controlling
+(wlf:show    wm 'summary)
+(wlf:hide    wm 'summary)
+(wlf:toggle  wm 'summary)
+(wlf:select  wm 'summary)
+(wlf:toggle-maximize  wm 'summary)
+
+;; Window updating
+(wlf:refresh wm)
+(wlf:reset-window-sizes wm)
+(wlf:reset-init wm)
+
+;; Accessing a buffer
+(wlf:get-buffer wm 'summary) ; -> <#buffer object or buffer name>
+(wlf:set-buffer wm 'summary "*scratch*")
+
+;; Accessing a window
+(wlf:get-window wm 'summary) ; -> <#window object>
+
+;; Layout hook
+(defun wlf:test-hook (wset) (message "HOOK : %s" wset))
+(wlf:layout-hook-add wm 'wlf:test-hook)
+(wlf:layout-hook-remove wm 'wlf:test-hook)
+
+ API Document
+
+ Layout function
+
+  * wlf:layout
+      + Lay out windows and return a
+        management object.
+      + Arguments: (see the following
+        sections)
+          o recipe : layout recipe
+            list
+          o window-params : window
+            options
+          o subwindow-p : optional
+            flag
+      + Return
+          o a wset object, the window
+            management object
+  * wlf:no-layout
+      + Just return a management
+        object, does not change window
+        layout.
+      + The arguments and return value
+        are the same as wlf:layout
+        ones.
+
+ Layout recipe:
+
+( (split type) (split option) 
+               (left window name or recipe)
+               (right window name or recipe) )
+
+  * split type
+      + - : split vertically
+      + | : split horizontally
+  * split option (the prefix 'left'
+    can be replaced by 'right',
+    'upper' and 'lower'.)
+      + :left-size (column or row
+        number) window size
+      + :left-max-size (column or row
+        number) if window size is
+        larger than this value, the
+        window is shrunken.
+      + :left-size-ratio (0.0 - 1.0)
+        window size ratio. the size of
+        the other side is the rest.
+
+Note:
+
+  * The split option can be omitted.
+  * The size parameters, :size,
+    :max-size and :size-ratio, are
+    mutually exclusive.
+  * The size of a window is related
+    with one of the other side window.
+    So, if both side windows set
+    conflict size parameters, the
+    window size may not be adjusted as
+    you write.
+
+ Window options:
+
+  * :name the window name.
+  * :buffer a buffer name or a buffer
+    object to show the window. If nil
+    or omitted, the current buffer
+    remains.
+  * :default-hide (t/nil) if t, the
+    window is hided initially.
+    (default: nil)
+  * :fix-size (t/nil) if t, when the
+    windows are laid out again, the
+    window size is remained. (default:
+    nil)
+
+ subwindow-p option:
+
+If this option is not nil, this
+function splits the windows within the
+current window. If this option is nil
+or omitted, this function uses the
+entire space of the current frame.
+Because some user actions and
+complicated window layouts may cause
+unexpected split behaviors, it is easy
+to use the entire space of a frame.
+
+ Return value (Window management
+object):
+
+You should not access the management
+object directly, because it is not
+intended direct access. You can make
+some management objects to switch the
+window layout.
+
+ Access functions
+
+  * wlf:get-buffer
+  * wlf:set-buffer
+  * wlf:wset-live-p
+
+ Control functions
+
+  * wlf:refresh
+  * wlf:reset-window-sizes
+  * wlf:reset-init
+  * wlf:show
+  * wlf:hide
+  * wlf:toggle
+  * wlf:toggle-maximize
+  * wlf:select
+
+ Layout hook
+
+After splitting windows, registered
+hook are called with one argument, the
+window management object.
+
+  * wlf:layout-hook-add
+**** e2wm - trace, pluginy!
+*** helm -  (defun outer-action (_candidate)                                        
+   [...]                                                                 
+   (helm-run-after-quit                                                  
+    (lambda () (helm :sources inner-helm-source :buffer "*helm inner*")))
+   (message "finished calling outer helm action"))                       
+
+   dlaczego nie pozwala wyjsc z minibufora?
+ (defun outer-action (_candidate)                                        
+   [...]                                                                 
+   (helm-run-after-quit                                                  
+    (lambda () (helm :sources inner-helm-source :buffer "*helm inner*")))
+   (message "finished calling outer helm action"))                       
+
+ * helm-files.el (helm-find-files-grep): Don't run inside a timer.          
+ @t thierryvolpiatto * helm-utils.el (helm-quit-and-execute-action): Save selection.     07935e1
+                     * helm.el (helm-internal): Reenable catch exit.                            
+                     (helm-initial-setup): Reset saved action and selection.                    
+                     (helm-execute-selection-action-1): Use saved selection                     
+                     and set selection earlier before running action.          
+**** uruchomic helm w timp? ->czy mozna w jednym purpose-oknie mieszac watki? jakby tu dac timp:
+(add-to-list 'purpose-user-mode-purposes '(python-mode . py))
+(add-to-list 'purpose-user-mode-purposes '(inferior-python-mode . py-repl))
+(purpose-compile-user-configuration)
+***** jak sie nie da,sprobowac z jakims "opakowaniem" - pythona mozna, innego emacsa nie?
+
+***** nested?
+
+
+*** exwm
+;startx -display :1 -- :1 vt8
+xdm
+exwm-input-set-key - global-set-key
+
+(push ?\C-q exwm-input-prefix-keys)
+(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
+;;application-specific
+(add-hook 'exwm-manage-finish-hook
+          (lambda ()
+            (when (and exwm-class-name
+                       (string= exwm-class-name "Emacs"))
+              (setq-local exwm-input-prefix-keys '(?\C-c)))))
+
+    Key                Command                                Remark                    
+C-c C-f     exwm-layout-set-fullscreen    Enter fullscreen mode                         
+C-c C-h     exwm-floating-hide            Hide a floating X window                      
+C-c C-k     exwm-input-release-keyboard   Switch to char-mode                           
+C-c C-m     exwm-workspace-move-window    Move X window to another workspace            
+C-c C-q     exwm-input-send-next-key      Send a single key to the X window;            
+                                          can be prefixed with C-u to send multiple keys
+C-c C-t C-ggggf exwm-floating-toggle-floating Toggle between tiling and floating mode       
+C-c C-t C-m exwm-layout-toggle-mode-line  Toggle mode-line                              
+
+(exwm-input-set-simulation-keys
+ '(([?\C-z] . C-x)
+   ([?\C-f] . right)
+   ([?\C-p] . up)
+   ([?\C-n] . down)
+   ([?\C-a] . home)
+   ([?\C-e] . end)
+   ([?\M-v] . prior)
+   ([?\C-v] . next)
+   ([?\C-d] . delete)
+   ([?\C-k] . (S-end delete))))
+
+
+** TODO AUTOYAS - z paczek i z tego co pisze
+
+starter-kit-eshell
+subshell-proc
+shell-switcher
+(require 'esh-help)
+help+
+helpful wilfred
+org-elisp-help
+gxref
+ace-isearch
+codic
+esk search kit
+f3
+?fastdef
+minibuf-isearch
+searchq - queue
+grep-a-lot
+ht
+
+automatically create snippets and examples
+
+semantic-typecache?
+semantic-ctxt
+semantic-gcc? 
+!parsec
+semantic-adebug (data-debug)
+
+
+** sandboxing:
+mmap: MAP_PRIVATE, MAP_FIXED, MAP_ANONYMOUS, https://stackoverflow.com/questions/10998943/get-the-copy-on-write-behaviour-of-forking-without-fork
+  czy valgrind umie to sledzic?, Persistent data structure
+btrfs,overlayfs+chroot to snapshot, chroot children? - domyslnie
+porto albo https://github.com/tailhook/vagga
+** shell -expand?
+** nlp
+*** swaml -mailing lists, google groups itd.
+** debuggery, tracery
+*** sysdig https://github.com/draios/sysdig/wiki/Tracers
+*** edebug -trace'owac -side effecty,
+debug-on-next-call -funcall,eval,apply
+debugger-old-buffer
+?debugger-will-be-back
+elp-instrument-package?
+(debugger-record-expression)
+trace-buffer?
+trace-level?
+(setq helm-debug t)
+(setq stack-trace-on-error 
+!ADVICE POST/EXIT!
+debugger/edebug - nazwajem albo gdb albo edebug-tramp/timp
+
+***debug-symbole f
+
+apt-get source X
+cd X
+dpkg -
+Major opcode of failed request:  12 (X_ConfigureWindow)
+
+*** gdb pi -PEDA + ein? pyrsp?
+ipython:
+jupyter-console --kernel gdb
+jupyter console --existing kernel-11336.json
+
+gdb -ex="python from ipykernel import kernelapp as app;import os; os.environ['PYTHONSTARTUP'] = os.environ.get('GDBPYSTARTUP', ''); app.launch_new_instance() " &
+$! -pid
+
+/run/user/1000/jupyter/kernel-30707.json
+
+python attach: pyringe,signal? pdb-clone
+TREPAN?
+jit?
+
+
+*** 
+** Emacs
+*** TODO log4e + elmacro
+*** ert
+*** suggest
+*** pythonic +tramp
+*** async
+*** elisp docs
+*** elisp search
+*** el-patch
+*** TODO eshell - gadanie do bufferow - czy mozna to zrobic w shell?
+** github blame 
+** i3wm-switch-to-workspace -zintegrowac z C-x up , "i3-msg exec"
+** historia konsoli - jak ja wyciagnac z navorskiego do shell
+   -> .bash_history, .zsh_history, moze cos w rodzaju "occur"
+** string-edit! - dobry pomysl, tylko czemu nie dziala?
+** http, curl, itd. - sniffery w chromie w fedorze,HTTP TRACE,run-query!
+** docker:cgroups przeciw zawieszaniu!
+** greasemonkey, mozrepl,vimperator
+** chrome debugger+chrome-dev
+** zrobic dockerami, chefami i innymi tak, zeby moc debugowac gdb albo basha
+*** git "#{Chef::Config[:file_cache_path]}/app_name" do
+  repository node[:app_name][:git_repository]
+  revision node[:app_name][:git_revision]
+  action :sync
+end
+
+*** A search is a full-text query that can be done from several locations, including from within a recipe, by using the search subcommand in knife, the search method in the Recipe DSL, the search box in the Chef management console, and by using the /search or /search/INDEX endpoints in the Chef server API. 
+**** knife search node 'ec2:*' -a ec2.instance_type
+**** knife search node <query_to_run> -a <main_attribute>.<nested_attribute>
+**** knife search node "languages_ruby_version:1.9.3"
+**** node "network_interfaces_en1_addresses:192.168.0.195" lub node "addresses:192.*"
+**** knife search client "name:boo~"
+**** role: top-level, roles:expanded
+**** from within a recipe: search(:node, 'role:load_balancer')
+**** quoting search(:node, %Q{run_list:"recipe[#{the_recipe}]"} ), expanded:recipes
+**** foreach: qa_nodes = search(:node,"chef_environment:QA")
+qa_nodes.each do |qa_node|
+    # Do useful work specific to qa nodes only
+end
+**** 
+*** habitat 
+**** hooks - reload, reconfigure, run (exec 2>&1),post-run
+**** attach in plan.sh or callbacks
+**** tunable config recv_buffer {{cfg.recv_buffer}}, Users can alter config at runtime using hab config apply
+**** config controlflow: if unless each with lookup partials log {{#helper blockname}}
+  {{expression}}
+{{/helper}}
+**** eachalive tojson toyaml,fix_interpreter
+**** hab pkg build -R (reuse)
+** indeksowanie i logi - w nocnym ec2 - jak z tych logow wypierdolic smieci, podsumowac:in->out?
+** dependencies + git blame - znalezc wszystkie miejsca, gdzie wywoluje funkcje i polecenia dependencji i sprawdzic, czy taka funkcja w dependencji istnieje - jak nie -> git blame 
+*** dependencies: sensiolabs-de/deptrac , OWASP?
+*** deptrac
+** xkbcomp/ckbcomp
+** 
+** 
+** 
+** 
+** "
+** theorists: Continuations are also used in models of computation including denotational semantics, the Actor model, process calculi, and lambda
+calculus. 

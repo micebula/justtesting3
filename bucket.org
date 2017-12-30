@@ -1,0 +1,19 @@
+https://github.com/abo-abo/hydra/wiki/Org-mode-lin
+<<a>- [[a][file:~/bucket.org::a]]
+>
+* 
+  :PROPERTIES:
+  :URL:      https://github.com/abo-abo/hydra/wiki/Org-mode-links
+  :ID:       db88f525-5b1e-4227-aaad-33568dc804b6
+  :ARCHIVED_AT: [[file:/home/a/data/db/88f525-5b1e-4227-aaad-33568dc804b6/2017-10-27T02:55:46+0200/][2017-10-27T02:55:46+0200]]
+  :END:
+* Tasks
+** TODO 
+   [2017-11-02 Thu]
+   [[http://tkf.github.io/emacs-jedi/latest/][Jedi.el - Python auto-completion for Emacs — Emacs Jedi 0.2.0alpha2 documentation]]
+ein:jedi-setup
+** TODO 
+   [2017-11-02 Thu]
+   [[http://tkf.github.io/emacs-jedi/latest/][Jedi.el - Python auto-completion for Emacs — Emacs Jedi 0.2.0alpha2 documentation]]
+ein:jedi-setup
+http://tkf.github.com/emacs-ipython-notebook/#ein:jedi-setup

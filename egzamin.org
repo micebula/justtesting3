@@ -1,0 +1,156 @@
+* ActED,soa pdfs,aktuariusze.net, http://www.casact.org/admissions/studytools/index.cfm?fa=PastExams
+* najpierw przyklady, no original!
+* TI-Basic programming 
+R_c=mln(1+Rm/m)
+R_F=(R_2T_2-R_1T_1)/(T_2-T1)
+   =R2+(R2-R1)T1/(T_2-T_1)
+mod.dur(noncontinuous):dB=-BD(dy/(1+y))
+
+life:
+h(x)=f(x)/s(x)=-dln(s(x))
+S(x)=exp(-H(x))=exp(-\lambda A(x))
+
+
+$S_X(x)=M_\lambda (A(x))$
+2.11
+
+!4.13 -loss costs?
+model:
+PGF(z)=MGF(ln(z)) 
+PGF^(n)(0)/n!=P(n)
+Y=(X-d)+ -> F_Y(x)=F_X(x+d)
+franchise:E(X-d)+ +d*S(d)
+e(d)=\int_d S(x)/S(d)
+X- pareto -> (X-d)+|X>d -Pareto(a,\theta+d)
+TVAR_p(X)=(\int_VAR_p(X) xf(x)dx)/(1-p)
+         =(\int_p Var_y(X)dy)/(1-p)
+TVAR_p(X)=VAR_p(X)+e_x(VAR_p(X))
+* pomoce techniczne:
+  szukanie, znajdowanie, notatki: 
+  printf ... | fold -w 80
+NLTK:
+nltk.data.load(resource_url, format='auto', cache=True, verbose=False, logic_parser=None, fstruct_reader=None, encoding=None)
+nltk.data.LazyLoader(_path
+ nltk.text.ContextIndex(tokens, context_func=None, filter=None, key=<function ContextIndex.<lambda>>)
+     common_contexts(words, fail_on_unknown=False, similar_words(word,n=20)
+     nltk.text.ConcordanceIndex(tokens, key=<function ConcordanceIndex.<lambda>>)
+     common_contexts(words, num=20
+* pydoc,doctest,grasp,ein
+** pygments:
+class DiffLexer(RegexLexer):
+    name = 'Diff'
+    aliases = ['diff']
+    filenames = ['*.diff']
+
+    tokens = {
+        'root': [
+            (r' .*\n', Text),
+            (r'\+.*\n', Generic.Inserted),
+            (r'-.*\n', Generic.Deleted),
+            (r'@.*\n', Generic.Subheading),
+            (r'Index.*\n', Generic.Heading),
+            (r'=.*\n', Generic.Heading),
+            (r'.*\n', Text),
+        ]
+    }
+    from pygments.lexer import RegexLexer, bygroups, include
+    from pygments.token import *
+    
+    class ExampleLexer(RegexLexer):
+        tokens = {
+            'comments': [
+                (r'/\*.*?\*/', Comment),
+                (r'//.*?\n', Comment),
+            ],
+            'root': [
+                include('comments'),
+                (r'(function )(\w+)( {)',
+                 bygroups(Keyword, Name, Keyword), 'function'),
+                (r'.', Text),
+            ],
+            'function': [
+                (r'[^}/]+', Text),
+                include('comments'),
+                (r'/', Text),
+                (r'\}', Keyword, '#pop'),
+            ]
+        }
+
+
+
+
+** OCR:
+*** TODO weak-margin?
+  g++  -ltesseract -llept ./orientation.cpp -llept -o orientation
+     https://github.com/bennokr/latex-equation-from-image#context-commitish-filter-field
+
+char * GetHOCRText
+  void PaintColParts(const STRING& outfile) const;
+  
+  // Debugger function that renders the blobs in part_grid_ over the input
+  // image.
+  void PaintSpecialTexts(const STRING& outfile) const;
+
+
+  narysowac: /home/a/seshat/SampleMathExps/exp.scgink
+  czy mozna wytrenowac seshat na latexu?
+  [lang].[fontname].exp[num].tr: libicu UCharDirection-EuropeanNumberSeparator
+  shapeclustering -F font_properties -U unicharset lang.fontname.exp0.tr lang.fontname.exp1.tr ...
+  unicharset_extractor lang.fontname.exp0.box lang.fontname.exp1.box ...
+  tesseract eng.timesitalic.exp0.tif eng.timesitalic.exp0 batch.nochop makebox
+  tess3:training/text2image --text=training_text.txt --outputbase=[lang].[fontname].exp0 --font='Font Name' --fonts_dir=/path/to/your/fonts
+  training/tesstrain_utils.sh
+  int EquationDetect::FindEquationParts(
+      ColPartitionGrid* part_grid, ColPartitionSet** best_columns
+    ProcessMathBlockSatelliteParts();
+  void EquationDetect::MergePartsByLocation() {
+  void EquationDetect::IdentifySeedParts()
+
+  inftyreader zrobic w chuja? napakowac strony? strace? 
+     "[0-9]+[a-z.]*[.][^.)]*[0-9][)]"
+  zrobic wyszukiwarke: definicje-twierdzenia,przyklady,skad sie to wzielo?
+  xref+avyjump do okienek, historia pozycji w buforze
+
+
+
+                                        
+           var $canvas = $('#drawing-canvas').sketchable({                 
+	     graphics: {                                                   
+	       strokeStyle: "red",                                         
+	       firstPointSize: 2                                           
+	     }                                                             
+           });                                                             
+                                                                         
+           Now we can take a look at their submitStrokes() function to see 
+           how to take the strokes from Sketchable and convert to SCG Ink. 
+           The line var strokes = $canvas.sketchable('strokes'); gets the  
+           strokes, and then the line strokes = transform(strokes); applies
+           a quick transformation to extract only the data they need.      
+           Here's the transform() function for reference:                  
+                                                                         
+           function transform(strokes) {                                   
+	     for (var i = 0; i < strokes.length; ++i)                      
+  up vote      for (var j = 0, stroke = strokes[i]; j < stroke.length; ++j)
+  2 down           strokes[i][j] = [ strokes[i][j][0], strokes[i][j][1] ]; 
+  vote       return strokes;                                               
+  accepted };                                                              
+                                                                         
+           The value returned fro transform() is a three-dimensional array 
+           of strokes and points. (Each element of the first dimension is a
+           stroke, each element of the second dimension is a point, and the
+           third dimension is x-, y-coordinates.) On that site they go     
+           ahead and POST that array to the server which must handle the   
+           final conversion to SCG Ink. I wrote a JavaScript function to   
+           handle it:                                                      
+                                                                         
+           function strokesToScg(strokes) {                                
+	     var scg = 'SCG_INK\n' + strokes.length + '\n'                 
+	     strokes.forEach(function (stroke) {                           
+	       scg += stroke.length + '\n'                                 
+	       stroke.forEach(function (p) {                               
+		 scg += p[0] + ' ' + p[1] + '\n'                           
+	       })                                                          
+	     })                                                            
+                                                                         
+	     return scg                                                    
+           }                       

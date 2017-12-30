@@ -1,0 +1,11 @@
+global moj
+
+probe begin
+{ moj=%{open("/home/a/1","r"b);%};}
+
+probe syscall.open.return
+{
+      if($filename==moj)
+	printf("udalo sie, %s",user_string($filename));
+
+}

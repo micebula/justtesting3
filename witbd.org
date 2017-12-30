@@ -1,0 +1,132 @@
+* WITBD
+** strategic src:
+ systemtap
+ gdb
+ gcc
+ llvm
+ solr
+ opensemanticframework+to do czego linkowali z uima
+ hud od gnome'a lub unity
+
+** emacs
+*** TODO nested M-x, recursive edits  
+**** helm -drop and resume !  
+***** TODO zobaczyc C-g i helm-resume -jak mozna zapisac i odtworzyc aktywna sesje
+****** czy mozna zrobic helma w nowym procesie?
+******* wyszukiwanie - "grepowanie" + robienie bazy, jesli znalezlismy to co trzeba.
+** debuggery
+*** TODO skryptowanie gdb
+*** TODO stap-server
+*** stap - guru - i podlaczamy debugger
+*** tracecompass, python-lttng tools, log4j
+**** -Dorg.apache.logging.log4j.simplelog.StatusLogger.level=trace.
+
+****** LMAX DESRUPTOR - jak zredukowac blokowanie jadra i zwiekszyc wydajnosc
+**** JSR - scripting java with python,scala
+**** 
+
+** solr -search itself
+      - jvmti (analogicznie: gcc plugins ,llvmi, llvm jit, lldb)
+ -a \"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=1044\""
+  for best index size and searching performance, set "index" to false
+     for all general text fields, use copyField to copy them to the
+     catchall "text" field, and use that for searching.  
+ termVectors: [false] set to true to store the term vector for a
+	given field.
+	When using MoreLikeThis, fields used for similarity should be
+	stored for best performance.
+ termPositions: Store position information with the term vector.  
+	This will increase storage costs.
+
+** SHELLS:
+ czy eshell kompatybilny z bashem i innymi?
+ czy mozna uzyc bashdb do evaluowania basha krok po kroku?
+
+ for fn in `cat filenames.txt`; do  
+	e "the next file is $fn"  
+	cat $fn  
+    done
+** systemy
+
+*** chefdk
+**** vagrant
+***** TODO 
+**** NIX:
+   nix-shell builtins.currentSystem for the system argument -I path --log-type pretty nix-shell '<nixpkgs>' -A pan --pure \
+		  --command 'export NIX_DEBUG=1; export NIX_CORES=8; return'
+   nix-shell -E 'with import <nixpkgs> { }; runCommand "dummy" { buildInputs = [ sqlite xorg.libX11 ]; } ""'
+    nix-shell -p pan -I nixpkgs=https://github.com/NixOS/nixpkgs-channels/archive/8a3eea054838b55aca962c3fbde9c83c102b8bf2.tar.gz
+   setting NIX_PATH
+
+
+   $NIX_PATH nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixos/nixpkgs:nixos-config=/etc/nixos/configuration.nix:/nix/var/nix/profiles/per-user/root/channels
+    #! /usr/bin/env nix-shell
+              #! nix-shell -i python -p python pythonPackages.prettytable
+
+              import prettytable
+
+              # Print a simple table.
+              t = prettytable.PrettyTable(["N", "N^2"])
+              for n in range(1, 10): t.add_row([n, n * n])
+              print t
+
+   robimy closure: nix-build -I nixos-config=./configuration.nix
+              '<nixxos>' -A system --no-out-link
+	  nixos-install [-I path] [--root root] [--closure closure] [--no-channel-copy] [--no-root-passwd] [--no-bootloader]
+			[{--max-jobs | -j} number] [--cores number] [--option name value] [--show-trace] [--chroot] [--help]
+
+
+
+
+   OpenSemanticFrameWork
+       php \        -dxdebug.var_display_max_data=8 \
+           -dxdebug.var_display_max_children=4 \
+           -r 'var_dump( "a longer string", array( 1, 2, 3, 4, 5, 6, 7 ) );'
+      xdebug.file_link_format    
+
+    php -d xdebug.remote_enable=on \
+	-d xdebug.remote_host=127.0.0.1 \
+	-d xdebug.remote_port=9000 \
+	-d xdebug.remote_handler=dbgp \
+	-d xdebug.idekey=geben \
+	-d xdebug.remote_autostart=On \
+	/tmp/gebenTest.php
+
+
+   highlighting?
+   MoreLikeThis?
+   JsonPreAnalyzedParser
+
+   opengrok index -> tomcat catalina     
+   StreamingUpdateSolrServer java client.
+   jdb 
+   opensemanticframework
+
+
+
+   Pozniej: systemtap, lttng, bcc itd.
+   ->splunk? solr-lucidworks?
+
+   emacs - search interface
+
+   antlr
+   nlp
+   ontologies
+
+
+   Zaczniemy od cpdt
+   why/cpdt/Frama-C!
+
+   TensorFlow
+
+
+	->
+
+   mining -GHTorrent
+
+   etap 1. Testy - trace'y polaczone z kodem i komentarzami
+   etap 2. 
+** buildy, regression testy
+** kompilatory, interpretery
+*** TODO jak uzyskac ich informacje o zwiazkach w kodzie
+** NLP,ontologie

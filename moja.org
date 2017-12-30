@@ -1,0 +1,2187 @@
+ #+STARTUP: overview
+
+
+* klawiatura
+** slownik z sasiadami dzielonymi na prawa i lewa reke
+** xkb inny tryb na liczby i znakami specjalne
+  Make your own xkb configuration file                                                                                           
+                                                                                                                                            
+             The idea is to "read" the current keyboard config (do not call xmodmap), and write your own symbols file based on it. First:   
+                                                                                                                                            
+             xkbcomp -xkb $DISPLAY                                                                                                          
+                                                                                                                                            
+             This creates server-0_0.xkb. In this file, take the following block:                                                           
+                                                                                                                                            
+             xkb_symbols "pc+inet(evdev)+compose(menu)+whatever(option)" {                                                                  
+                 key <ESC> { [ Escape ] };                                                                                                  
+                 ...                                                                                                                        
+             };                                                                                                                             
+                                                                                                                                            
+             change the first line into:                                                                                                    
+                                                                                                                                            
+             default xkb_symbols "my_symbols" {                                                                                             
+                 include "pc+inet(evdev)"                                                                                                   
+                 include "compose(menu)+whatever(option)"                                                                                   
+zapisz do /usr/share/X11/xkb/symbols/my_terrific_kb
+potem ckbcomp my_terrific_kb 
+* WITbd
+
+** gdb
+   record-full target -avx?
+   patch, oracles,compile code, nsinst?
+   beheader-znalezc wszystkie menu, wszystkie reakcje na click-event i udostepnic je inaczej
+   
+   gdbinit na przykladzie .gdbinit emacsa
+
+** search
+
+** NLP
+** TODO wyszukiwanie informacji - rtags? codesearch? ag? recoll?
+*** OBINL, semantic web
+** TODO biblioteka numeryczna
+** Emacs lisp - ksiazka, ERT, Edebug,
+*** autozamykanie info
+*** Antlr + bison itp.
+** analiza zadania z AITUC - symulatory
+** TODO PEMiE - zadania
+** matplotlib!
+*** python+javascript->d3.js 
+** TODO test driven
+** TODO C++ env
+** 
+** TDD C
+* 
+* wyszukiwarki/CEDET
+** ECB
+** speedbar
+** semantic
+   C-c . g (G?) - symref - wszystkie odniesienia
+   semantic-ia-fast-jump - !!!przypisac skrot - "madre skakanie"
+   C-c , j/J - skakanie po etagach (bez kontekstu)
+* TODO przerobic wtyczke stack.el do stackoverflow/stackechange na duckduckgo.
+
+** TODO skonfigurowac emacsa z testami, gdb, gud, ddd, CMock Cunit
+   :LOGBOOK:
+   CLOCK: [2017-03-15 Wed 14:47]--[2017-03-15 Wed 22:09] =>  7:22
+   :END:
+
+** TODO zrobic zadania sekwencyjne Ex3, Ex4 z symulatorami (zobaczyc programy na zmitac, poszukac "mealy moore demo")
+
+** TODO pomoc emacsa  
+
+C-@ -multiselect		helm-toggle-visible-mark
+C-k -delete minibuffer
+
+M-x helm-resume - print screen
+print sc
+** icycle
+   :LOGBOOK:
+   CLOCK: [2017-03-15 Wed 22:09]
+   :END:
+
+ 
+
+* posrednie projekty
+** magit -async
+
+* gdb bb
+gdb execfile core
+jak skompilowac?
+-ggdb -gdwarf-4 -g3 -fvar-tracking-assignments -LD_POINTER_GUARD=0
+
+Emacs: Fsignal
+
+set args
+n show args
+path directory
+show paths
+show environment [var]
+set environment var [=value]
+set inferior-tty
+! show inferior-tty
+clone inferior
+remove-inferiors infno
+
+
+"maintenance info" must be followed by the name of an info command.
+List of maintenance info subcommands:
+
+maintenance info bfds -- List the BFDs that are currently open
+maintenance info breakpoints -- Status of all breakpoints
+maintenance info btrace -- Info about branch tracing data
+maintenance info program-spaces -- Info about currently known program spaces
+maintenance info psymtabs -- List the partial symbol tables for all object files
+maintenance info sections -- List the BFD sections of the exec and core files
+maintenance info symtabs -- List the full symbol tables for all object files
+
+thread/inforior id
+thred apply [thread-id-list][all]args
+
+thread find [regexp]
+
+follow-fork-mode parent/child
+set detach-on-fork on/off - co z drugim
+
+checkpoint - backup - reverse
+restart id
+
+rbreak file:regex np. rbreak file.c:.
+
+watch foo mask 0xffff00ff
+watch *0xfafafafa mask 0xffff00ff
+rwatch expr
+awatch expr
+syscall - lap systemcalls (lub kategorie)
+load unload [regexp]- shared libraries
+
+break foo if x>0
+commands
+silent
+printf " ",x
+set x=y+4
+cont end
+
+save breakpoints [filename]
+info probes [type] [provider[name[objfile]]] -dtrace, systemtap
+
+advance/until location (u-tylko frame)
+
+skip -file file /-gfile glob
+skip function linespec /rfunction regexp
+
+set non-stop on - tylko jeden watek blokujemy
+
+break 5 thread 3
+jump
+set observer on
+TODO: trace	
+
+
+p 'f2.c'::x
+p 'funkcja::x
+
+
+p *array@len  -artificial arrays
+albo p/x (short [2]) 0x...
+
+
+
+convenience variable - iteracja:
+set $i=0
+p dtab[$i++]->fv
+RET
+RET
+
+
+
+display[/fmt] expr - whenever stops
+
+set print array on
+set print symbol on - w dodatku do adresu
+set print frame-arguments all/scalars
+
+set var g=4
+
+
+signal , queue-signal
+
+return [expression] = z funkcji
+
+set write on
+set write off
+
+set unwindonsignal off - print moze wywolac wyjatek
+set unwindonterminatingexception
+
+set write on
+
+
+pi python-interactive Ctrl+D - wyjdz
+set python print-stack
+source script-name
+python execfile ("script-name")
+gdb.PYTHONDIR
+gdb.execute(command,from_tty-czy to urzyszkodnik wpisal,to_string-czy do gdb std output)
+gdb.parse_and_eval
+gdb.solib_name
+gcc --enable-static-nss -z execstack
+
+     
+set environment varname [=value] LD_LIBRARY_PATH
+
+gcc -shared -fPIC malloc.c -o malloc.so
+
+bash: export LD_PRELOAD=/absolute/path/here/malloc.so
+set environment LD_PRELOAD=./malloc.so 
+ALBO PO PROSTU SCIAGNAC MALLOCA Z SIECI!http://code.metager.de/
+source/xref/gnu/glibc/malloc/
+
+
+
+(gdb) python
+>class HelloWorld (gdb.Command):
+>  """Greet the whole world."""
+>  def __init__ (self):
+>    super (HelloWorld, self).__init__ ("hello-world", gdb.COMMAND_USER)
+>  def invoke (self, args, from_tty):
+>    argv = gdb.string_to_argv (args)
+>    if len (argv) != 0:
+>      raise gdb.GdbError ("hello-world takes no arguments")
+>    print "Hello, World!"
+>HelloWorld ()
+bar = some_val['foo']
+
+Value.fetch_lazy()
+value.cast()
+value.dereference(),referenced_value, reference_value
+
+import gdb
+import itertools
+
+
+
+class Tr1HashtableIterator:
+    def __init__ (self, hash):
+        self.count = 0
+        self.n_buckets = hash['_M_bucket_count']
+        if self.n_buckets == 0:
+            self.node = False
+        else:
+            self.bucket = hash['_M_buckets']
+            self.node = self.bucket[0]
+            self.update ()
+
+    def __iter__ (self):
+        return self
+
+    def update (self):
+        # If we advanced off the end of the chain, move to the next
+        # bucket.
+        while self.node == 0:
+            self.bucket = self.bucket + 1
+            self.node = self.bucket[0]
+            self.count = self.count + 1
+            # If we advanced off the end of the bucket array, then
+            # we're done.
+            if self.count == self.n_buckets:
+                self.node = False
+
+    def next (self):
+        if not self.node:
+            raise StopIteration
+        result = self.node.dereference()['_M_v']
+        self.node = self.node.dereference()['_M_next']
+        self.update ()
+        return result
+
+class Tr1UnorderedMapPrinter:
+    "Print a tr1::unordered_map"
+
+    def __init__ (self, typename, val):
+        self.typename = typename
+        self.val = val
+
+    def to_string (self):
+        return '%s with %d elements' % (self.typename, self.val['_M_element_count'])
+
+    @staticmethod
+    def flatten (list):
+        for elt in list:
+            for i in elt:
+                yield i
+
+    @staticmethod
+    def format_one (elt):
+        return (elt['first'], elt['second'])
+
+    @staticmethod
+    def format_count (i):
+        return '[%d]' % i
+
+    def children (self):
+        counter = itertools.imap (self.format_count, itertools.count())
+        # Map over the hash table and flatten the result.
+        data = self.flatten (itertools.imap (self.format_one, Tr1HashtableIterator (self.val)))
+        # Zip the two iterators together.
+        return itertools.izip (counter, data)
+
+    def display_hint (self):
+        return 'map'
+
+
+(gdb) print uomap
+$1 = std::tr1::unordered_map with 2 elements = {
+  [23] = 0x804f766 "maude",
+  [5] = 0x804f777 "liver"
+
+wiecej:https://sourceware.org/gdb/onlinedocs/gdb/Writing-a-Pretty_002dPrinter.html#Writing-a-Pretty_002dPrinter
+
+gdb.inferiors()
+gdb.selected_inferior()
+inferior.search_memory(address,lwngth, pattern)
+FrameDecorator,MemoryChangedEvent
+gdb.start_recording(method)
+gdb.current_recording()
+gdb.stop_recording()
+Record.replay_position
+
+    The instruction representing the current replay position. If there is no replay active, this will be None. 
+
+Variable: Record.instruction_history
+
+    A list with all recorded instructions. 
+
+Variable: Record.function_call_history
+Record.goto
+Instruction.decoded
+RecordInstruction.sal
+
+
+
+def bringback ():
+    rec = gdb.current_recording ()
+    if not rec:
+        return
+
+    insn = rec.instruction_history
+    if len (insn) == 0:
+        return
+
+    try:
+        position = insn.index (rec.replay_position)
+    except:
+        position = -1
+    try:
+        filename = insn[position].sal.symtab.fullname ()
+    except:
+        filename = None
+
+    for i in reversed (insn[:position]):
+	try:
+            current = i.sal.symtab.fullname ()
+	except:
+            current = None
+
+        if filename == current:
+            continue
+
+        rec.goto (i)
+        return
+
+
+def countrange (filename, linerange):
+    count = 0
+
+    def filter_only (file_name):
+        for call in gdb.current_recording ().function_call_history:
+            try:
+                if file_name in call.symbol.symtab.fullname ():
+                    yield call
+            except:
+                pass
+
+    for c in filter_only (filename):
+        for i in c.instructions:
+            try:
+                if i.sal.line in linerange:
+                    count += 1
+                    break;
+            except:
+                    pass
+
+    return count
+
+
+
+class HelloWorld (gdb.Command):
+  """Greet the whole world."""
+
+  def __init__ (self):
+    super (HelloWorld, self).__init__ ("hello-world", gdb.COMMAND_USER)
+
+  def invoke (self, arg, from_tty):
+    print "Hello, World!"
+
+
+
+
+
+Function: Frame.function ()
+Function: Frame.older ()-    Return the frame that called this frame. 
+Function: Frame.newer ()    Return the frame called by this frame. 
+Function: Frame.find_sal () -symtab
+
+
+
+
+class SomeFrameDecorator()
+...
+...
+    def frame_locals(self):
+        vars = []
+        try:
+            block = self.inferior_frame.block()
+        except:
+            return None
+
+        # Iterate over all symbols in a block.  Add all
+        # symbols, except arguments.
+        for sym in block:
+            if sym.is_argument:
+                continue
+            vars.append(SymValueWrapper(sym,None))
+
+        # Add an example of a synthetic local variable.
+        vars.append(SymValueWrapper(``bar'', 99))
+
+        return vars
+
+
+
+class SymValueWrapper():
+
+    def __init__(self, symbol, value):
+        self.sym = symbol
+        self.val = value
+
+    def value(self):
+        return self.val
+
+    def symbol(self):
+        return self.sym
+
+class SomeFrameDecorator()
+...
+...
+    def frame_args(self):
+        args = []
+        try:
+            block = self.inferior_frame.block()
+        except:
+            return None
+
+        # Iterate over all symbols in a block.  Only add
+        # symbols that are arguments.
+        for sym in block:
+            if not sym.is_argument: #CHECK
+                continue
+            args.append(SymValueWrapper(sym,None))
+
+        # Add example synthetic argument.
+        args.append(SymValueWrapper(``foo'', 42))
+
+        return args
+
+
+
+class SomeFrameDecorator()
+...
+...
+    def frame_locals(self):
+        vars = []
+        try:
+            block = self.inferior_frame.block()
+        except:
+            return None
+
+        # Iterate over all symbols in a block.  Add all
+        # symbols, except arguments.
+        for sym in block:
+            if sym.is_argument:
+                continue
+            vars.append(SymValueWrapper(sym,None))
+
+        # Add an example of a synthetic local variable.
+        vars.append(SymValueWrapper(``bar'', 99))
+
+        return vars
+* systemtap lttng dtrace 
+man stapprobes - probe point families
+kernel.function("*@net/socket.c).call (albo return)
+funkcja@plik
+process("a.out").statement("*@main.c:200") 	Line 200 of the a.out program.
+SYSTEMTAP UZYWA DYNINST? CZY WLASNEGO?
+czy BPpoint Dyninsta mozna wstawic do pliku C?
+      http://www.devx.com/cplus/Article/34999/0/page/3
+
+pp()
+ppfunc()
+$$vars
+print_backtrace() - jadrowa
+print_ubacktrace() - user-space
+thread_indent(-1/+1)
+gettimeofday_s()g
+probefunc() - gdzie jestesmy
+print.backtrace()
+pid,execname,tid.uid.
+gettimeofday_s()
+
+use stap -L PROBEPOINT to enumerate the variables available there.
+see entire generated C code may be inspected (try the -p3 option)
+ --vp 1
+foreach (x = [a,b] in foo) { fuss_with(x) } //foo -2d array?
+
+-x trace only specified PID (only for userland probing)
+-c run given command and only trace it and its children(will still trace all threads for kernel probes)
+-L list probe points matching given pattern along withavailable variables-
+d load given module debuginfo to help with symbolresolution in backtraces
+-g embed C code in stap scriptIunsafe, dangerous and fun
+
+guru:
+%{
+#include <linux/in.h>
+#include <linux/ip.h>
+%} /* <-- top level */
+/* Reads the char value stored at a given address: */
+function __read_char:long(addr:long) %{ /* pure */
+STAP_RETURN(kderef(sizeof(char), STAP_ARG_addr));
+CATCH_DEREF_FAULT ();
+%} /* <-- function body */
+/* Determines whether an IP packet is TCP, based on the iphdr:
+*/
+function is_tcp_packet:long(iphdr) {
+protocol = @cast(iphdr, "iphdr")->protocol
+return (protocol == %{ IPPROTO_TCP %}) /* <-- expression */
+}
+
+kread - safe dereferencing
+
+
+TAPSET
+
+
+PATTERN: nazwafunkcji@pathnamepliku:1-4 (+1-4 wzgl poczatku funkcji) 
+@var("varname@src/file.c")
+&var->field, &@var("var@file.c")[
+@var("var") $$will provide a string that also includes all values ofnested data types.
+$$vars, $$locals, $$vars
+
+
+process("kl").begin
+process(PID).thread.end
+
+process().syscall (.return)
+syscall parameters: $syscall, $arg1, ...,$arg6
+
+stap -e ’probe process("ls").function("*").call {log (probefunc()." ".$$parms)}’ \-c ’ls -l
+
+
+stalk follow children: gdb: set detach-on-fork mode off 
+    stap -x pid, -c cmd
+
+--unprivileged -wszystko uzytkownika
+-d DIR - miejsce debug symboli
+
+PROGRAM LINKAGE TABLE: shared libs, extern, arrays, etc.
+The first syntax in the following will probe the functions in the program linkage table of a particular process.The second syntax will also add the program linkage tables of librariesrequired by that process. .plt(”...”)can be specified to match particular plt entries.
+probe process("...").plt { ... }
+probe process("...").plt process("...").library("...").plt { ... }
+
+static linkage: The sdt.h file also provides dtrace compatible markers through
+DTRACE_PROBE and an associated python dtrace script.
+
+
+Java: Byteman/JBoss
+     ten sam uzytkownik, 1 proces
+bez overridow:
+java("PNAME").class("CLASSNAME").method("PATTERN")
+z overridami:
+java("org.my.MyApp").class("^java.lang.Object").method("foo(int)")
+
+$provider - ktora klasa dala metode
+$name - sygnatura funkcji
+
+kernel markers -callback
+
+try {
+/* do something */
+/* trigger error like kread(0), or divide by zero, or error("foo") */
+} catch (msg) { /* omit (msg) entirely if not interested */
+/* println("caught error ", msg) */
+/* handle error */
+}
+** TODO : zaczepic do gdbservera program,ktory czyta dany plik
+   
+  
+* elasticsearch 
+
+_bulk -index
+_search -
+_mapping - index
+
+
+/_search
+Search all types in all indices
+/gb/_search
+Search all types in the gb index
+/gb,us/_search
+Search all types in the gb and us indices
+/g*,u*/_search
+Search all types in any indices beginning with g or beginning with u
+/gb/user/_search
+/gb,us/user,tweet/_search
+Search types user and tweet in the gb and us indices
+/_all/user,tweet/_search
+Search types user and tweet in all indices
+
+text:"roses are red" AND _query_:"type:poems"
+text:hi  AND  _query_:"{!dismax qf=title pf=title}how now brown cow"
+
+Now of course this isn’t too useful on it’s own, but it becomes very powerful in conjunction with the query parser framework and local params which allows us to change the types of queries.  The following example embeds a DisMax query in a normal lucene query:
+
+text:hi  AND  _query_:"{!dismax qf=title pf=title}how now brown cow"
+
+&q=text:hi  AND  _query_:"{!dismax qf=title pf=title v=$qq}
+&qq=how now brown cow
+
+q={!func}div(popularity,price)&fq={!frange l=1000}customer_ratings
+
+sort=div(popularity,price) desc, score desc
+
+pseudo-fields:&fl=sum(x, y),id,a,b,c,score
+
+q=product(popularity, query({!dismax qf=text v='solr rocks'})) 
+q=product(popularity, query($qq))&qq={!dismax qf=text}solr rocks 
+
+velocity response writer - wynik
+"jakarta apache"~10
+mod_date:[20020101 TO 20030101}
+constant score:(description:blue OR color:blue)^=1.0 text:shoes
+
+pf - boosts if close proximity
+ps/qf - phrase slop - jak daleko moga byc
+ qf="fieldOne^2.3 fieldTwo fieldThree^0.4"- query fields (def =df)
+bf -boost function
+q.alt -domyslne
+bq -boost query
+
+function query in the case of _val_ or a nested query in the case of _query_
+ps=10 field1:"foo
+
+_val_:myfield
+
+_val_:"recip(rord(myfield),1,2,3)"
+
+_query_:"{!dismax qf=myfield}how now brown cow"
+docfreq(field,val)
+
+map(x,0,100, sum(x,599), docfreq(text,solr)) - changes any values between 0 and 100 to x+599, and all other values to frequency of the term 'solr' in the field text.
+
+&q=docfreq(text,$myterm) &myterm=solr
+idf(fieldName,'solr'): measures the inverse of the frequency of the occurrence of the term 'solr' in fieldName
+max(myfield,myotherfield,0)
+edit,jw,ngrsm-funkcje,FQN-wlasny StringDistance
+sumtotaltermfreq Returns the sum of totaltermfreq values for all terms in the field
+tf- term frequency w tym wierszu
+q={!dismax qf=myfield}solr rocks is equivalent to: q={!type=dismax qf=myfield}solr rocks
+q={!child of="content_type:parentDocument"}title:lucene
+q= +title:join +{!parent which="content_type:parentDocument"}comments:SolrCloud -sibling sister mandatory clause
+{!boost b=log(popularity)}foo
+q={!collapse field=group_field max=sum(cscore(),numeric_field)} 
+q=foo&fq={!collapse field=ISBN}&expand=true nested
+
+ 
+Scoring
+
+
+
+{
+"tweet": {
+"type":
+"string",
+"analyzer": "english"
+}
+
+PUT /gb
+{
+"mappings": {
+"tweet" : {
+"properties" : {
+"tweet" : {
+"type" :
+"string",
+"analyzer": "english"
+},
+"date" : {
+"type" :
+"date"
+},
+"name" : {
+"type" :
+"string"
+},
+"user_id" : {
+"type" :
+"long"
+
+
+curl -XPOST "http://localhost:9200/_search" -d'
+{
+    "query": {
+        "filtered": {
+            "query": {
+                "query_string": {
+                    "query": "drama"
+                }
+            },
+            "filter": {
+                //Filter to apply to the query
+            }
+        }
+    }
+}
+ 
+
+curl -XPUT "http://localhost:9200/movies/movie/_mapping" -d'
+{
+   "movie": {
+      "properties": {
+         "director": {
+            "type": "string",
+            "index": "not_analyzed"
+        }
+      }
+   }
+}'
+
+additional, double, multiple:
+curl -XPUT "http://localhost:9200/movies/movie/_mapping" -d'
+{
+   "movie": {
+      "properties": {
+         "director": {
+            "type": "multi_field",
+            "fields": {
+                "director": {"type": "string"},
+                "original": {"type" : "string", "index" : "not_analyzed"}
+            }
+         }
+      }
+   }
+}'  
+*
+ 
+  "_source": ["account_number", "balance"]
+
+
+GET /bank/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "age": "40" } }
+      ],
+      "must_not": [
+        { "match": { "state": "ID" } }
+      ]
+    }
+  }
+}
+
+
+
+
+GET /bank/_search
+{
+  "query": {
+    "bool": {
+      "must": { "match_all": {} },
+      "filter": {
+        "range": {
+          "balance": {
+            "gte": 20000,
+            "lte": 30000
+          }
+        }
+      }
+    }
+  }
+}
+
+nested/cascade aggregate
+
+
+GET /bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_state": {
+      "terms": {
+        "field": "state.keyword",
+        "order": {
+          "average_balance": "desc"
+        }
+      },
+      "aggs": {
+        "average_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
+  
+
+POST /exams/_search?size=0
+{
+    "aggs" : {
+        "avg_grade" : { "avg" : { "field" : "grade" } }
+    }
+}
+
+aggregate functions -subaggregates for buckets
+
+*** painless
+
+#+begin_src screen
+Get hockey/_search
+{
+  "query": {
+    "function_score": {
+      "script_score": {
+        "script": {
+          "lang": "painless",
+          "inline": "int total = 0; for (int i = 0; i < doc['goals'].length; ++i) { total += doc['goals'][i]; } return total;"
+        }
+      }
+    }
+  }
+}
+#+end_src
+
+
+
+POST /exams/_search?size=0
+{
+    "aggs" : {
+        "avg_grade" : {
+            "avg" : {
+                "script" : {
+                    "file": "my_script",
+                    "params": {
+                        "field": "grade"
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+POST /exams/_search?size=0
+{
+    "aggs" : {
+        "avg_corrected_grade" : {
+            "avg" : {
+                "field" : "grade",
+                "script" : {
+                    "lang": "painless",
+                    "inline": "_value * params.correction",
+                    "params" : {
+                        "correction" : 1.2
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+POST /sales/_search?size=0
+{
+    "aggs" : {
+        "t_shirts" : {
+            "filter" : { "term": { "type": "t-shirt" } },
+            "aggs" : {
+                "avg_price" : { "avg" : { "field" : "price" } }
+            }
+        }
+    }
+}
+
+
+mumrur3 plugin - hashes
+matrix adjacency bucketing
+children bucketing
+"inline": "doc['date'].date.dayOfWeek"
+breadth-first aggregation
+
+
+GET logs/_search
+{
+  "size": 0,
+  "aggs" : {
+    "messages" : {
+      "filters" : {
+        "filters" : {
+          "errors" :   { "match" : { "body" : "error"   }},
+          "warnings" : { "match" : { "body" : "warning" }}
+        }
+      }
+    }
+  }
+
+GET /megacorp/employee/_search
+{
+"aggs" : {
+"all_interests" : {
+"terms" : { "field" : "interests" },
+"aggs" : {
+"avg_age" : {
+"avg" : { "field" : "age" }
+}
+}
+}
+}
+}
+
+GET /website/blog/123?_source=title,text - tylko te pola z _source, reszta bez zmian
+
+* solr
+index handlers:
+   dih -processor,transformer
+   delta-import, full-importt
+joins:http://localhost:8983/solr/select?q={!join+from=manu_id_s+to=id}ipod
+IgnoreTikaException
+literal.rozszerzenie=
+
+* NLP
+https://dkpro.github.io/
+UIMA
+* Emacs
+** idee
+*** wyswietlac ostatnie komendy
+*** proponowac kolejne komendy
+*** notowac w org, przypisywac skroty
+*** chowac pomoc po wykorzystaniu podpowiedzi
+** EDEBUG
+
+C-u C-M-x -instrumentacja
+edebug-all-defs
+<SPC> -step
+S-stop
+G-continue ignoring breakpoints
+t c - continue 1 s
+edebug-initial-mode
+debug-on-entry - z traceback lub debug-on-quit
+wszystkie funkcje zinstrumentowac (debug-once)
+C-h v - debug-on-...
+f -sexp forward
+o -step out
+C-] -abort-recursive
+r-redistplay
+d-backtrace
+b -breakpoint, x-temporary,a-next
+(edebug-set-global break-condition)
+zmienna edebug-unwrap-results
+v-view outside 
+  C-x X w - wroc do Edebug
+w - wroc do stop point
+
+e - eval outside
+M-:eval in Edebug
+C-x X X - global condition
+o/i - step in/out
+h-jump here
+f- forward one sexp from here
+x conditional breakpoint
+B - do nastepnego bp
+E- *edebug* eval-list -Lisp Interaction
+  C-c C-u -update-eval-list
+  back:C-c C-w
+
+
+sit-for
+tooltip-hook -mouse
+
+ADVISING(decorator):
+(add-function :before (process-filter proc) #'my-tracing-function)
+(advice-add 'display :around #'his-tracing-function)
+:around - oryg. funkcja argumentem
+
+print: datadebug analyzer
+
+
+*** gdb
+ #! /bin/sh
+ EMACS_PID=...
+ cd /usr/local/src/emacs-26.0.50/src
+ exec -a debug-emacs xterm -e gdb /usr/local/bin/emacs $EMACS_PID
+
+See the mentioned file .gdbinit in the emacs src directory, e.g. xbacktrace prints a lisp backtrace. 
+xbacktrace
+
+Window -> preferences -> C/C++ -> Debug -> GDB
+
+Now you can see STL containers pretty-printed in Variables view while debugging in Eclipse.
+
+Other commands can be used to make gdb output more decent:
+
+set print pretty on
+set print object on
+set print static-members on
+set print vtbl on
+set print demangle on
+set demangle-style gnu-v3
+set print sevenbit-strings off
+*** Command Loop
+** Skroty 
+C-M-q -reindent, autoformat
+*** trees
+
+**** `M-S-<right>'     (`org-demote-subtree')- Demote the current subtree by one level.
+**** `C-c C-x C-y'     (`org-paste-subtree') - Yank subtree from kill ring.  This does modify the level of the subtree 
+**** C-c ^'     (`org-sort')
+**** C-c *'     (`org-toggle-heading
+**** C-c / r ; C-c C-c - sparse trees. When called with a `C-u'   prefix argument, previous highlights are kept, so several calls to this command can be stacked.
+**** M-g n -next sparse
+*****      (setq org-agenda-custom-commands 
+  '(("f" occur-tree "FIXME"))) will define the key `C-c a f' as a shortcut for creating a sparse tree
+  matching the string `FIXME'.
+***** Or you can use `C-c C-e C-v' to export only the visible part of the document and print the resulting file.
+**** lists unordered                                                      :g:
+     :plainlists:
+      Org knows ordered lists, unordered lists, and description lists.
+      * _Unordered_ list items start with `-', `+', or `*'(1)  as bullets.
+
+      * _Ordered_ list items start with a numeral followed by either a
+	period or a right parenthesis(2), such as `1.' or `1)'(3).  If you
+	want a list to start with a different value (e.g., 20), start the
+	text of the item with `[@20]'(4).  Those constructs can be used in
+	any item of the list in order to enforce a particular numbering.
+
+      * _Description_ list items are unordered list items, and contain the
+	separator ` :: ' to distinguish the description _term_ from the
+	description. - BNF
+
+      Items belonging to the same list must have the same indentation on
+   the first line.  In particular, if an ordered list reaches number
+   `10.', then the 2-digit numbers must be written left-aligned with the
+   other numbers in the list.  An item ends before the next line that is
+   less or equally indented than its bullet/number.
+
+
+
+
+	** Lord of the Rings
+           My favorite scenes are (in this order)
+           1. The attack of the Rohirrim
+           2. Eowyn's fight with the witch king
+              + this was already my favorite scene in the book
+              + I really like Miranda Otto.
+           3. Peter Jackson being shot by Legolas
+              - on DVD only
+              He makes a really funny face when it happens.
+           But in the end, no individual scenes matter but the film as a whole.
+           Important actors in this film are:
+           - Elijah Wood :: He plays Frodo
+           - Sean Astin :: He plays Sam, Frodo's friend.  I still remember
+             him very well from his role as Mikey Walsh in The Goonies.
+     :END:
+
+*** marks ‘C-<SPC>’
+     Set the mark at point, and activate it (‘set-mark-command’).
+‘C-@’
+     The same.
+‘C-x C-x’
+     Set the mark at point, and activate it; then move point where the
+     mark used to be (‘exchange-point-and-mark’).
+
+*** Blocks fold [[xor]] - [[(xor)]]
+     #+BEGIN_EXAMPLE
+     Some example from a text file.
+     #+END_EXAMPLE 
+Numbering, Remove labels, source coloring
+#+BEGIN_SRC emacs-lisp -n -r 20 
+  (defun org-xor (a b) (ref:xor)
+     "Exclusive or."
+     (if a (not b) b))
+     #+END_SRC
+C-c ' (apostrof) - to language mode
+*** hyperlinks hiperlinki 
+[[emacs]] -headline- 
+[[(xor)]] - ref
+    [[link][description]] 
+[[TimeEnemy]]
+C-c C-o -klikamy
+dwa backspace'y na poczatku linku i sie obnaza
+<<TimeEnemy>>
+**** insert from other buffer - C-c C-l
+
+[[info:org#Handling%20links][info:org#Handling links]]
+:links:
+     [[linkword:tag][description]]
+where the tag is optional.  The linkword must be a word, starting with
+a letter, followed by letters, numbers, `-', and `_'.  Abbreviations
+are resolved according to the information in the variable
+`org-link-abbrev-alist' that relates the linkwords to replacement text.
+Here is an example:
+
+     (setq org-link-abbrev-alist
+       '(("bugzilla"  . "http://10.1.2.9/bugzilla/show_bug.cgi?id=")
+         ("url-to-ja" . "http://translate.google.fr/translate?sl=en&tl=ja&u=%h")
+         ("google"    . "http://www.google.com/search?q=")
+         ("gmap"      . "http://maps.google.com/maps?q=%s")
+         ("omap"      . "http://nominatim.openstreetmap.org/search?q=%s&polygon=1")
+         ("ads"       . "http://adsabs.harvard.edu/cgi-bin/nph-abs_connect?author=%s&db_key=AST")))
+
+   If the replacement text contains the string `%s', it will be
+replaced with the tag.  Using `%h' instead of `%s' will url-encode the
+tag (see the example above, where we need to encode the URL parameter.)
+Using `%(my-function)' will pass the tag to a custom function, and
+replace it by the resulting string.
+
+   If the replacement text doesn't contain any specifier, the tag will
+simply be appended in order to create the link.
+
+   Instead of a string, you may also specify a function that will be
+called with the tag as the only argument to create the link.
+
+   With the above setting, you could link to a specific bug with
+`[[bugzilla:129]]', search the web for `OrgMode' with
+`[[google:OrgMode]]', show the map location of the Free Software
+Foundation `[[gmap:51 Franklin Street, Boston]]' or of Carsten office
+`[[omap:Science Park 904, Amsterdam, The Netherlands]]' and find out
+what the Org author is doing besides Emacs hacking with
+`[[ads:Dominik,C]]'.
+
+   If you need special abbreviations just for a single Org buffer, you
+can define them in the file with
+
+     #+LINK: bugzilla  http://10.1.2.9/bugzilla/show_bug.cgi?id=
+     #+LINK: google    http://www.google.com/search?q=%s
+
+In-buffer completion (*note Completion::) can be used after `[' to
+complete link abbreviations.  You may also define a function that
+implements special (e.g., completion) support for inserting such a link
+with `C-c C-l'.  Such a function should not accept any arguments, and
+return the full link with prefix.  You can add a completion function to
+a link like this:
+     (org-link-set-parameters ``type'' :complete #'some-function)
+
+:END:
+*** links with searches
+     [[file:~/code/main.c::255]]
+     [[file:~/xx.org::My Target]]
+     [[file:~/xx.org::*My Target]]
+     [[file:~/xx.org::#my-custom-id]]
+     [[file:~/xx.org::/regexp/]]
+
+`255'
+     Jump to line 255.
+
+`My Target'
+     Search for a link target `<<My Target>>', or do a text search for
+     `my target', similar to the search in internal links, see *note
+     Internal links::.  In HTML export (*note HTML export::), such a
+     file link will become an HTML reference to the corresponding named
+     anchor in the linked file.
+
+`*My Target'
+     In an Org file, restrict search to headlines.
+
+`#my-custom-id'
+     Link to a heading with a `CUSTOM_ID' property
+
+`/regexp/'
+     Do a regular expression search for `regexp'.  This uses the Emacs
+     command `occur' to list all matches in a separate window.  If the
+     target file is in Org mode, `org-occur' is used to create a sparse
+     tree with the matches.
+**** org protocol 
+:orgprotocol:
+ "org-protocol:/sub-protocol:/" triggers actions associated with sub-protocol through the custom variable org-protocol-protocol-alist.
+
+It comes with four predefined handlers:
+
+org-protocol-store-link
+    triggered through the sub-protocol "store-link". Stores an Org-link and pushes the URL to the kill-ring.
+org-protocol-capture
+    Fill a CAPTURE buffer with information gathered somewhere else. This handler is triggered through the "capture" sub-protocol and uses the function org-capture.
+org-protocol-remember
+    Fills a remember buffer with information gathered somewhere else. This handler is triggered through the "remember" sub-protocol and still available for backward compatibility. This handler uses org-remember. Use the current org-protocol-capture.
+org-protocol-open-source
+    "open-source". Maps URLs to local filenames. Use this to open sources of already published contents in emacs for editing. 
+READ TUTORIAL FOR HANDLERS!!
+:END:
+
+*** custom searched 
+for a particular file type, and to do the
+search for the string in the file.  Using `add-hook', these functions
+need to be added to the hook variables
+`org-create-file-search-functions' and
+`org-execute-file-search-functions'.  
+
+*** clock zegarek
+
+****  * Pick up Sam at school
+     <2017-03-08 Wed>       <2007-05-16 Wed 12:30 +1w>
+C-u C-c . <2017-03-08 Wed 21:21>--<2017-03-08 Wed 21:36> 00:15 
+Roznica-time range-time difference: C-u C-c C-y
+
+**** custom time function <%%(diary-float t 42)>
+**** deadline DEADLINE: <2004-02-29 Sun>  
+SCHEDULED: <2004-12-25 Sat -2d> -start working, 2d delay
+**** effort wysilek C-c C-x e     (`org-set-effort')'
+     Set the effort estimate for the current entry.  With a numeric
+     prefix argument, set it to the Nth allowed value (see below).
+     This command is also accessible from the agenda with the `e' key.  
+
+`C-c C-x C-e     (`org-clock-modify-effort-estimate')'
+     Modify the effort estimate of the item currently being clocked.
+
+**** C-c > emacsowy kalendarz calendar 
+**** C-c C-x C-r - raport
+**** C-c C-c - zaktualizuj dynamic block -tabele czasu, C-c C-c C-x C-u
+ #+NAME:TimeEnemy :clocktable:
+     :maxlevel #+NAME:TimeEnemy   Maximum level depth to which times are listed in the table.
+                  Clocks at deeper levels will be summed into the upper level.
+     :scope       The scope to consider.  This can be any of the following:
+                  nil        the current buffer or narrowed region
+                  file       the full current buffer
+                  subtree    the subtree where the clocktable is located
+                  treeN      the surrounding level N tree, for example `tree3'
+                  tree       the surrounding level 1 tree
+                  agenda     all agenda files
+                  ("file"..) scan these files
+                  file-with-archives    current file and its archives
+                  agenda-with-archives  all agenda files, including archives
+     :block       The time block to consider.  This block is specified either
+                  absolutely, or relative to the current time and may be any of
+                  these formats:
+                  2007-12-31    New year eve 2007
+                  2007-12       December 2007
+                  2007-W50      ISO-week 50 in 2007
+                  2007-Q2       2nd quarter in 2007
+                  2007          the year 2007
+                  today, yesterday, today-N          a relative day
+                  thisweek, lastweek, thisweek-N     a relative week
+                  thismonth, lastmonth, thismonth-N  a relative month
+                  thisyear, lastyear, thisyear-N     a relative year
+                  untilnow
+                  Use `S-<left>/<right>' keys to shift the time interval.
+     :tstart      A time string specifying when to start considering times.
+                  Relative times like `"<-2w>"' can also be used.  See
+                  *note Matching tags and properties:: for relative time syntax.
+     :tend        A time string specifying when to stop considering times.
+                  Relative times like `"<now>"' can also be used.  See
+                  *note Matching tags and properties:: for relative time syntax.
+     :wstart      The starting day of the week.  The default is 1 for monday.
+     :mstart      The starting day of the month.  The default 1 is for the first
+                  day of the month.
+     :step        `week' or `day', to split the table into chunks.
+                  To use this, `:block' or `:tstart', `:tend' are needed.
+     :stepskip0   Do not show steps that have zero time.
+     :fileskip0   Do not show table sections from files which did not contribute.
+     :tags        A tags match to select entries that should contribute.  See
+                  *note Matching tags and properties:: for the match syntax.
+
+:END:
+**** start on current item C-c C-x C-i, potem C-o
+     :LOGBOOK:
+     CLOCK: [2017-03-08 Wed 23:38]--[2017-03-08 Wed 23:43] =>  0:05
+     CLOCK: [2017-03-08 Wed 23:21]--[2017-03-08 Wed 23:38] =>  0:17
+     :END:
+     C-c C-x C-x - Org-clock-in-last lub dowolne z C-u -multitasking wybor zadan
+**** liczniki timers
+`C-c C-x 0     (`org-timer-start')'
+     Start or reset the relative timer.  By default, the timer is set
+     to 0.  When called with a `C-u' prefix, prompt the user for a
+     starting offset.  If there is a timer string at point, this is
+     taken as the default, providing a convenient way to restart taking
+     notes after a break in the process.  When called with a double
+     prefix argument `C-u C-u', change all timer strings in the active
+     region by a certain amount.  This can be used to fix timer strings
+     if the timer was not started at exactly the right moment.  
+
+`C-c C-x ;     (`org-timer-set-timer')'
+     Start a countdown timer.  The user is prompted for a duration.
+     `org-timer-default-timer' sets the default countdown value.  Giving
+     a numeric prefix argument overrides this default value.  This
+     command is available as `;' in agenda buffers.
+
+`C-c C-x . - zapisz
+*** capture zlapac zapisac `C-c c     (`org-capture')'
+     :LOGBOOK:
+     CLOCK: [2017-03-08 Wed 23:43]--[2017-03-09 Thu 00:49] =>  1:06
+     :END:
+     Call the command `org-capture'.  Note that this key binding is
+     global and not active by default: you need to install it.  If you
+     have templates defined *note Capture templates::, it will offer
+     these templates for selection or use a new Org outline node as the
+     default template.  It will insert the template into the target
+     file and switch to an indirect buffer narrowed to this new node.
+     You may then insert the information you want.
+
+`C-c C-c     (`org-capture-finalize')'
+     Once you have finished entering information into the capture
+     buffer, `C-c C-c' will return you to the window configuration
+     before the capture process, so that you can resume your work
+     without further distraction.  When called with a prefix arg,
+     finalize and then jump to the captured item.
+
+`C-c C-w     (`org-capture-refile')'
+     Finalize the capture process by refiling (*note Refile and copy::)
+     the note to a different place.  Please realize that this is a
+     normal refiling command that will be executed--so the cursor
+     position at the moment you run this command is important.  If you
+     have inserted a tree with a parent and children, first move the
+     cursor back to the parent.  Any prefix argument given to this
+     command will be passed on to the `org-refile' command.
+
+`C-c C-k     (`org-capture-kill')'
+     Abort the capture process and return to the previous state.
+
+   You can also call `org-capture' in a special way from the agenda,
+using the `k c' key combination.
+
+**** TODO templates C-c c C   capture templates definitions
+     :templatesdefinition:
+look at an example.  Say you would like to use one template to create
+general TODO entries, and you want to put these entries under the
+heading `Tasks' in your file `~/org/gtd.org'.  Also, a date tree in the
+file `journal.org' should capture journal entries.  A possible
+configuration would look like:
+
+     (setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+             "* TODO %?\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree "~/org/journal.org")
+             "* %?\nEntered on %U\n  %i\n  %a")))
+
+If you then press `C-c c t', Org will prepare the template for you like
+this:
+     * TODO
+       [[file:LINK TO WHERE YOU INITIATED CAPTURE]]
+
+
+     :END:
+**** zalaczniki data attachments git 
+     :PROPERTIES:
+     :ATTACH_DIR_INHERIT: t
+     :END:
+`data'
+directory which lives in the same directory where your Org file
+lives(1).  If you initialize this directory with `git init', Org will
+automatically commit changes when it sees them. 
+C-c C-a
+**** moving copying
+`C-c M-w     (`org-copy')'
+     Copying works like refiling, except that the original note is not
+     deleted.  
+
+`C-c C-w     (`org-refile')'
+     Refile the entry or region at point.  This command offers possible
+     locations for refiling the entry and lets you select one with
+     completion.  The item (or all items in the region) is filed below
+     the target heading as a subitem.  Depending on
+     `org-reverse-note-order', it will be either the first or last
+     subitem.
+**** archiving
+     :PROPERTIES:
+     :ORDERED:  t
+     :END:
+     :archive:
+     `C-c C-x C-a 
+
+     `C-u C-c C-x C-s'
+     Check if any direct children of the current headline could be
+     moved to the archive.  To do this, each subtree is checked for
+     open TODO entries.  If none are found, the command offers to move
+     it to the archive location.  If the cursor is _not_ on a headline
+     when this command is invoked, the level 1 trees will be checked.  
+
+     `C-u C-u C-c C-x C-s'
+     As above, but check subtree for timestamps instead of TODO
+     entries.  The command will offer to archive the subtree if it
+     _does_ contain a timestamp, and that timestamp is in the past.
+
+     The default archive location is a file in the same directory as the
+     current file, with the name derived by appending `_archive' to the
+     current file name.
+
+     
+INTERNAL ARCHIVING:     
+`C-c C-x a     (`org-toggle-archive-tag')'
+     Toggle the ARCHIVE tag for the current headline.  When the tag is
+     set, the headline changes to a shadowed face, and the subtree
+     below it is hidden.  
+
+`C-u C-c C-x a'
+     Check if any direct children of the current headline should be
+     archived.  To do this, each subtree is checked for open TODO
+     entries.  If none are found, the command offers to set the ARCHIVE
+     tag for the child.  If the cursor is _not_ on a headline when this
+     command is invoked, the level 1 trees will be checked.  
+
+     :END:
+*** latex
+    :LOGBOOK:
+    CLOCK: [2017-03-09 Thu 00:49]--[2017-03-09 Thu 01:15] =>  0:26
+    :END:
+For example:
+
+     \begin{equation}
+     x=\sqrt{b}
+     \end{equation}
+
+     If $a^2=b$ and \( b=2 \), then the solution must be
+     either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
+
+
+`C-c C-x C-l'
+     Produce a preview image of the LaTeX fragment at point and overlay
+     it over the source code.  If there is no fragment at point,
+     process all fragments in the current entry (between two
+     headlines).  When called with a prefix argument, process the
+     entire subtree.  When called with two prefix arguments, or when
+     the cursor is before the first headline, process the entire buffer.  
+
+`C-c C-c'
+     Remove the overlay preview images.
+
+   You can turn on the previewing of all LaTeX fragments in a file with
+
+     #+STARTUP: latexpreview
+****    cdlatex 
+   * Environment templates can be inserted with `C-c {'.
+
+   * The <TAB> key will do template expansion if the cursor is inside a
+     LaTeX fragment(1).  For example, <TAB> will expand `fr' to
+     `\frac{}{}' and position the cursor correctly inside the first
+     brace.  Another <TAB> will get you into the second brace.  Even
+     outside fragments, <TAB> will expand environment abbreviations at
+     the beginning of a line.  For example, if you write `equ' at the
+     beginning of a line and press <TAB>, this abbreviation will be
+     expanded to an `equation' environment.  To get a list of all
+     abbreviations, type `M-x cdlatex-command-help RET'.
+   $\frac{1}{2}$
+*** autoewaluacja kodu autoevaluation 
+-- User Option: org-confirm-babel-evaluate
+          When `t', Org prompts the user for confirmation before
+          executing each code block.  When `nil', Org executes code
+          blocks without prompting the user for confirmation.  When
+          this option is set to a custom function, Org invokes the
+          function with these two arguments: the source code language
+          and the body of the code block.  The custom function must
+          return either a `t' or `nil', which determines if the user is
+          prompted.  Each source code language can be handled
+          separately through this function argument.
+
+     For example, this function enables execution of `ditaa' code
+     +blocks without prompting:
+
+          (defun my-org-confirm-babel-evaluate (lang body)
+            (not (string= lang "ditaa")))  ; don't ask for ditaa
+          (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+Following `shell' and `elisp' links
+     Org has two link types that can also directly evaluate code (*note
+     External links::).  Because such code is not visible, these links
+     have a potential risk.  Org therefore prompts the user when it
+     encounters such links.  The customization variables are:
+
+      -- User Option: org-confirm-shell-link-function
+          Function that prompts the user before executing a shell link.
+
+      -- User Option: org-confirm-elisp-link-function
+          Function that prompts the user before executing an Emacs Lisp
+          link.
+
+*** Imenu - najwazniejsze punkty pliku
+
+
+
+
+*** stopki, footnotes [fn:stopa]
+*** orgstruct org-integracja
+**** (add-hook 'message-mode-hook 'turn-on-orgstruct)
+     (add-hook 'message-mode-hook 'turn-on-orgstruct++)
+**** You can also use Org structure editing to fold and unfold headlines
+in _any_ file, provided you defined `orgstruct-heading-prefix-regexp':
+the regular expression must match the local prefix to use before Org's
+headlines.  For example, if you set this variable to `";; "' in Emacs
+Lisp files, you will be able to fold and unfold headlines in Emacs Lisp
+commented lines.  Some commands like `org-demote' are disabled when the
+prefix is set, but folding/unfolding will work correctly. #plainlist
+C-c C-*
+
+     ** Lord of the Rings
+        My favorite scenes are (in this order)
+***** The attack of the Rohirrim
+***** Eowyn's fight with the witch king
+****** this was already my favorite scene in the book
+****** I really like Miranda Otto.
+***** Peter Jackson being shot by Legolas
+****** on DVD only
+He makes a really funny face when it happens.        But in the end, no individual scenes matter but the film as a whole.
+        Important actors in this film are:
+        - Elijah Wood :: He plays Frodo
+        - Sean Austin :: He plays Sam, Frodo's friend.  I still remember
+          him very well from his role as Mikey Walsh in The Goonies.
+ 
+
+***** To explore the abstract structure of an Org buffer, run this in a
+buffer:
+
+     M-: (org-element-parse-buffer) RET
+
+
+
+*** tabelki
+**** `C-c |     (`org-table-create-or-convert-from-region')'
+    Convert the active region to a table.  If every line contains at
+    least one TAB character, the function assumes that the material is
+    tab separated.  If every line contains a comma, comma-separated
+    values (CSV) are assumed.  If not, lines are split at whitespace
+    into fields.  You can use a prefix argument to force a specific
+    separator: `C-u' forces CSV, `C-u C-u' forces TAB, `C-u C-u C-u'
+    will prompt for a regular expression to match the separator, and a
+**** C-c C-c -realign
+**** rows/collumns 
+:rowcol:
+
+:END:
+**** tabelki
+***** `C-c |     (`org-table-create-or-convert-from-region')'
+     Convert the active region to a table.  If every line contains at
+     least one TAB character, the function assumes that the material is
+     tab separated.  If every line contains a comma, comma-separated
+     values (CSV) are assumed.  If not, lines are split at whitespace
+     into fields.  You can use a prefix argument to force a specific
+     separator: `C-u' forces CSV, `C-u C-u' forces TAB, `C-u C-u C-u'
+     will prompt for a regular expression to match the separator, and a
+
+*** search
+
+*** TODO Todos WITBD
+
+*** tags - limited inheritance                                      :tagusie:
+**** #+FILETAGS: :Peter:Boss:Secret:   To limit tag inheritance to specific tags, use
+
+**** Mutually exclusive, wykluczanie: #+TAGS: { @work(w)  @home(h)  @tennisclub(t) }  laptop(l)  pc(p)
+
+**** C-c C-q                                                              :g:
+**** hierarchy      #+TAGS: [ GTD : Control Persp ]
+Regex-hierarchy
+     #+TAGS: [ Vision : {V@.+} ]
+     #+TAGS: [ Goal : {G@.+} ]
+     #+TAGS: [ AOF : {AOF@.+} ]
+     #+TAGS: [ Project : {P@.+} ]
+**** search tags:
+     :searchtags:
+     `C-c / m  or  C-c \     (`org-match-sparse-tree')'
+     Create a sparse tree with all headlines matching a
+     tags/property/TODO search.  With a `C-u' prefix argument, ignore
+     headlines that are not a TODO line.  *Note Matching tags and
+     properties::.  
+
+     `C-c a m     (`org-tags-view')'
+     Create a global list of tag matches from all agenda files.  *Note
+     Matching tags and properties::.  
+
+     `C-c a M     (`org-tags-view')'
+     Create a global list of tag matches from all agenda files, but
+     check only TODO items and force checking subitems (see the option
+     `org-tags-match-list-sublevels').
+
+     These commands all prompt for a match string which allows basic
+     Boolean logic like `+boss+urgent-project1', to find entries with tags
+     `boss' and `urgent', but not `project1', or `Kathy|Sally'
+     :END:
+
+*** programowanie 
+**** semantic etags parsing browsing indexing
+M-x codesearch-search
+M-x etags (C++ ebrowse)
+M-x compile RET etags *.py RET
+M-x semantic-mode
+   C-c, j   C-c, J - funkcja lokalna, z innego pliku
+   C-c <space> - completion, C-c l - w drugim oknie completions
+bez jezyka, Regex(moze byc kilka rownolegle) --regex=[{LANGUAGE}]/TAGREGEXP/[NAMEREGEXP/]MODIFIERS
+
+***** SZUKANIE
+
+‘M-. TAG <RET>’
+     Find first definition of TAG (‘find-tag’).
+‘C-u M-.’
+     Find next alternate definition of last tag specified.
+‘C-u - M-.’
+     Go back to previous tag found.
+‘C-M-. PATTERN <RET>’
+     Find a tag whose name matches PATTERN (‘find-tag-regexp’).
+‘C-u C-M-.’
+     Find the next tag whose name matches the last pattern used.
+‘C-x 4 . TAG <RET>’
+     Find first definition of TAG, but display it in another window
+     (‘find-tag-other-window’).
+‘C-x 5 . TAG <RET>’
+     Find first definition of TAG, and create a new frame to select the
+     buffer (‘find-tag-other-frame’).
+
+
+‘M-x tags-search <RET> REGEXP <RET>’
+     Search for REGEXP through the files in the selected tags table.
+‘M-x tags-query-replace <RET> REGEXP <RET> REPLACEMENT <RET>’
+     Perform a ‘query-replace-regexp’ on each file in the selected tags
+     table.
+‘M-,’
+**** perspective windows  C-x x
+C-x x - poczatek
+Key -- Command
+
+    s -- persp-switch: Query a perspective to switch or create
+    k -- persp-remove-buffer: Query a buffer to remove from current perspective
+    c -- persp-kill : Query a perspective to kill
+    r -- persp-rename: Rename current perspective
+    a -- persp-add-buffer: Query an open buffer to add to current perspective
+    A -- persp-set-buffer: Add buffer to current perspective and remove it from all others
+    i -- persp-import: Import a given perspective from another frame.
+    n, <right> -- persp-next : Switch to next perspective
+    p, <left> -- persp-prev: Switch to previous perspective
+
+
+****** completion
+‘C-M-i’
+‘M-<TAB>’
+     Perform completion on the text around point, using the selected
+     tags table if one is loaded (‘completion-at-point’).
+‘M-x list-tags <RET> FILE <RET>’
+     Display a list of the tags defined in the program file FILE.
+‘M-x tags-apropos <RET> REGEXP <RET>’
+     Display a list of all tags matching REGEXP.
+
+***** TODO 
+
+   
+
+**** lisp
+‘C-u C-x C-e’ -eval w miejscu
+
+***** poruszanie
+ ‘C-M-a’
+      Move to beginning of current or preceding defun
+      (‘beginning-of-defun’).
+ ‘C-M-e’
+      Move to end of current or following defun (‘end-of-defun’).
+ ‘C-M-h’
+      Put region around whole current or following defun (‘mark-defun’).
+
+‘C-M-f’
+     Move forward over a balanced expression (‘forward-sexp’).
+‘C-M-b’
+     Move backward over a balanced expression (‘backward-sexp’).
+‘C-M-k’
+     Kill balanced expression forward (‘kill-sexp’).
+‘C-M-t’
+     Transpose expressions (‘transpose-sexps’).
+‘C-M-@’
+‘C-M-<SPC>’
+     Put mark after following expression (‘mark-sexp’).
+
+‘C-M-n’
+     Move forward over a parenthetical group (‘forward-list’).
+‘C-M-p’
+     Move backward over a parenthetical group (‘backward-list’).
+‘C-M-u’
+     Move up in parenthesis structure (‘backward-up-list’).
+‘C-M-d’
+     Move down in parenthesis structure (‘down-list’).
+***** compiler errors
+   Compilation mode provides the following additional commands.  These
+commands can also be used in ‘*grep*’ buffers, where the hyperlinks are
+search matches rather than error messages (*note Grep Searching::).
+
+‘M-g M-n’
+‘M-g n’
+‘C-x `’
+     Visit the locus of the next error message or match (‘next-error’).
+‘M-g M-p’
+‘M-g p’
+     Visit the locus of the previous error message or match
+     (‘previous-error’).
+‘M-n’
+     Move point to the next error message or match, without visiting its
+     locus (‘compilation-next-error’).
+‘M-p’
+     Move point to the previous error message or match, without visiting
+     its locus (‘compilation-previous-error’).
+‘M-}’
+     Move point to the next error message or match occurring in a
+     different file (‘compilation-next-file’).
+‘M-{’
+     Move point to the previous error message or match occurring in a
+     different file (‘compilation-previous-file’).
+‘C-c C-f’
+     Toggle Next Error Follow minor mode, which makes cursor motion in
+     the compilation buffer produce automatic source display.
+
+   To visit errors sequentially, type ‘C-x `’ (‘next-error’), or
+
+
+‘C-u C-x `’ starts again from the beginning of the compilation buffer,
+and visits the first locus.
+
+   ‘M-g M-p’ or ‘M-g p’ (‘previous-error’) iterates through errors in
+the opposite direction.
+
+
+LEVELS variable ‘compilation-skip-threshold’ controls
+this.  The default value, 1, means to skip anything less important than
+a warning.  A value of 2 means to skip anything less important than an
+error, while 0 means not to skip any messages.
+
+‘compilation-error-regexp-alist’ - parsowanie
+***** TODO Elisp
+      :LOGBOOK:
+      CLOCK: [2017-03-09 Thu 15:34]--[2017-03-12 Sun 15:38] => 72:04
+      :END:
+
+
+#+BEGIN_SRC emacs-lisp
+     (defun append-to-buffer (buffer start end)
+       "Append to specified buffer the text of the region.
+     It is inserted into that buffer before its point.
+
+     When calling from a program, give three arguments:
+     BUFFER (or buffer name), START and END.
+     START and END specify the portion of the current buffer to be copied."
+       (interactive
+        (list (read-buffer "Append to buffer: " (other-buffer
+                                                 (current-buffer) t))
+              (region-beginning) (region-end)))
+       (let ((oldbuf (current-buffer)))
+         (save-excursion
+           (let* ((append-to (get-buffer-create buffer))
+                  (windows (get-buffer-window-list append-to t t))
+                  point)
+             (set-buffer append-to)
+             (setq point (point))
+             (barf-if-buffer-read-only)
+             (insert-buffer-substring oldbuf start end)
+             (dolist (window windows)
+               (when (= (window-point window) point)
+                 (set-window-point window (point))))))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun eob ()
+    (interactive)
+  (push-mark)
+  (goto-char (point-min)))
+
+(defun czy (nazwa)
+   (interactive "B")
+       (if (get-buffer nazwa) "yes" "no"))
+#+END_SRC
+
+-- User Option: edebug-save-displayed-buffer-points
+     If this is non-‘nil’, Edebug saves and restores point in all
+     displayed buffers.
+
+     Saving and restoring point in other buffers is necessary if you are
+     debugging code that changes the point of a buffer that is displayed
+     in a non-selected window.  If Edebug or the user then selects the
+     window, point in that buffer will move to the window’s value of
+     point.
+
+     Saving and restoring point in all buffers is expensive, since it
+     requires selecting each window twice, so enable this only if you
+     need it.  *Note Edebug Display Update::.
+
+
+****** TODO print macros output
+MARKER,BUFFER, FUNCTION,t-echo area,symbol
+
+***** 
+***** TODO lisp modes
+(debug-on-entry function-name)
+
+#+BEGIN_SRC emacs-lisp
+  (defun fact (n)
+    (interactive "n")
+             (if (zerop n) 1
+		 (* n (fact (1- n)))))
+  (fact 6)
+#+END_SRC
+               ⇒ fact
+          (debug-on-entry 'fact)
+               ⇒ fact
+          (fact 3)
+
+
+***** debuggera komendy
+*edebug*
+tracing trace: ‘*edebug-trace*’ buffer, edebug-trace t
+
+‘cust-print.el’
+edebug-print-level
+
+‘c’
+     Exit the debugger and continue execution.  This resumes execution
+     of the program as if the debugger had never been entered (aside
+     from any side-effects that you caused by changing variable values
+     or data structures while inside the debugger).
+
+‘d’
+     Continue execution, but enter the debugger the next time any Lisp
+     function is called.  This allows you to step through the
+     subexpressions of an expression, seeing what values the
+     subexpressions compute, and what else they do.
+
+     The stack frame made for the function call which enters the
+     debugger in this way will be flagged automatically so that the
+     debugger will be called again when the frame is exited.  You can
+     use the ‘u’ command to cancel this flag.
+
+‘b’
+     Flag the current frame so that the debugger will be entered when
+     the frame is exited.  Frames flagged in this way are marked with
+     stars in the backtrace buffer.
+
+‘u’
+     Don’t enter the debugger when the current frame is exited.  This
+     cancels a ‘b’ command on that frame.  The visible effect is to
+     remove the star from the line in the backtrace buffer.
+
+‘j’
+     Flag the current frame like ‘b’.  Then continue execution like ‘c’,
+     but temporarily disable break-on-entry for all functions that are
+     set up to do so by ‘debug-on-entry’.
+
+‘e’
+     Read a Lisp expression in the minibuffer, evaluate it (with the
+     relevant lexical environment, if applicable), and print the value
+     in the echo area.  The debugger alters certain important variables,
+     and the current buffer, as part of its operation; ‘e’ temporarily
+     restores their values from outside the debugger, so you can examine
+     and change them.  This makes the debugger more transparent.  By
+     contrast, ‘M-:’ does nothing special in the debugger; it shows you
+     the variable values within the debugger.
+
+‘R’
+     Like ‘e’, but also save the result of evaluation in the buffer
+     ‘*Debugger-record*’.
+
+‘q’
+     Terminate the program being debugged; return to top-level Emacs
+     command execution.
+
+     If the debugger was entered due to a ‘C-g’ but you really want to
+     quit, and not debug, use the ‘q’ command.
+
+‘r’
+     Return a value from the debugger.  The value is computed by reading
+     an expression with the minibuffer and evaluating it.
+
+     The ‘r’ command is useful when the debugger was invoked due to exit
+     from a Lisp call frame (as requested with ‘b’ or by entering the
+     frame with ‘d’); then the value specified in the ‘r’ command is
+     used as the value of that frame.  It is also useful if you call
+     ‘debug’ and use its return value.  Otherwise, ‘r’ has the same
+     effect as ‘c’, and the specified return value does not matter.
+
+     You can’t use ‘r’ when the debugger was entered due to an error.
+
+‘l’
+     Display a list of functions that will invoke the debugger when
+     called.  This is a list of functions that are set to break on entry
+     by means of ‘debug-on-entry’.
+
+‘v’
+     Toggle the display of local variables of the current stack frame.
+
+
+‘h’
+     Proceed to the stop point near where point is (‘edebug-goto-here’).
+
+‘f’
+     Run the program for one expression (‘edebug-forward-sexp’).
+
+‘o’
+     Run the program until the end of the containing sexp
+     (‘edebug-step-out’).
+
+‘i’
+     Step into the function or macro called by the form after point
+     (‘edebug-step-in’).
+
+
+condition - ‘C-x X X’
+
+breakpoint - b u x (x-watunkowy)
+
+hardcoded - (edebug)
+*edebug* - buffer
+C-x X = - coverage
+ -- User Option: edebug-save-windows
+     If this is non-‘nil’, Edebug saves and restores the window
+     configuration.  
+     You can use the ‘W’ command in Edebug to change this variable
+     interactively.  *Note Edebug Display Update::.
+
+ -- User Option: edebug-save-displayed-buffer-points
+     If this is non-‘nil’, Edebug saves and restores point in all
+     displayed buffers.
+
+**** debugging Emacs
+***** gdb
+emacs i gdb przy pliku .gdbinit!
+
+ If Emacs hangs, or seems to be stuck in some infinite loop, typing
+"kill -TSTP PID", where PID is the Emacs process ID, will cause GDB to
+kick in, provided that you run under GDB.
+
+ Getting control to the debugger
+
+`Fsignal' is a very useful place to put a breakpoint in.
+All Lisp errors go through there.
+
+It is useful, when debugging, to have a guaranteed way to return to
+the debugger at any time.  When using X, this is easy: type C-z at the
+window where Emacs is running under GDB, and it will stop Emacs just
+as it would stop any ordinary program.  When Emacs is running in a
+terminal, things are not so easy.
+
+The src/.gdbinit file in the Emacs distribution arranges for SIGINT
+(C-g in Emacs) to be passed to Emacs and not give control back to GDB.
+On modern POSIX systems, you can override that with this command:
+
+   handle SIGINT stop nopass
+
+After this `handle' command, SIGINT will return control to GDB.  If
+you want the C-g to cause a QUIT within Emacs as well, omit the `nopass'.
+
+A technique that can work when `handle SIGINT' does not is to store
+the code for some character into the variable stop_character.  Thus,
+
+    set stop_character = 29
+
+makes Control-] (decimal code 29) the stop character.
+Typing Control-] will cause immediate stop.  You cannot
+use the set command until the inferior process has been started.
+Put a breakpoint early in `main', or suspend the Emacs,
+to get an opportunity to do the set command.
+
+When Emacs is running in a terminal, it is sometimes useful to use a separate
+terminal for the debug session.  This can be done by starting Emacs as usual,
+then attaching to it from gdb with the `attach' command which is explained in
+the node "Attach" of the GDB manual.
+
+ Examining Lisp object values.
+
+When you have a live process to debug, and it has not encountered a
+fatal error, you can use the GDB command `pr'.  First print the value
+in the ordinary way, with the `p' command.  Then type `pr' with no
+arguments.  This calls a subroutine which uses the Lisp printer.
+
+You can also use `pp value' to print the emacs value directly.
+***** DONE Edebug
+
+****** ‘edebug-all-defs C-M-x 
+When you invoke command ‘C-M-x’ (‘eval-defun’) with a prefix argument
+on a function definition, it instruments the definition before
+evaluating it.  (This does not modify the source code itself.)  If the
+variable ‘edebug-all-defs’ is non-‘nil’, that inverts the meaning of the
+prefix argument: in this case, ‘C-M-x’ instruments the definition
+_unless_ it has a prefix argument.
+****** I-instrument callee, i-instrument and jump
+****** TODO instrument macro (declare)
+******  two ways of evaluating forms that never instrument them: from a file with ‘load’,
+and from the minibuffer with ‘eval-expression’ (‘M-:’).
+****** eval w Edebug i poza
+‘e EXP <RET>’
+     Evaluate expression EXP in the context outside of Edebug
+     (‘edebug-eval-expression’).  That is, Edebug tries to minimize its
+     interference with the evaluation.
+
+‘M-: EXP <RET>’
+     Evaluate expression EXP in the context of Edebug itself
+     (‘eval-expression’).
+
+‘C-x C-e’
+     Evaluate the expression before point, in the context outside of
+     Edebug (‘edebug-eval-last-sexp’).
+***** TODO MMM, calculated submodes etc.
+***** Bison Bovine, Semantic,
+***** ERT
+
+**** TODO C
+***** TODO unit testing , TDD
+**** TODO GUD i GDB
+**** CAPTURE
+     :LOGBOOK:
+     CLOCK: [2017-03-09 Thu 01:15]--[2017-03-09 Thu 12:29] => 11:14
+     :END:
+**** DONE flymake
+     :LOGBOOK:
+     CLOCK: [2017-03-09 Thu 13:03]--[2017-03-09 Thu 15:34] =>  2:31
+     :END:
+   Logging output is controlled by the ‘flymake-log-level’ variable.
+‘3’ is the most verbose level
+F3
+F4
+**** ERT Emacs Regression Testing 
+
+*** M-x lgrep  zgrep 
+   Matcher Selection
+       -E, --extended-regexp
+              Interpret PATTERN as an extended regular expression (ERE, see below).
+
+       -F, --fixed-strings
+              Interpret PATTERN as a list of fixed strings (instead of regular expressions), separated by newlines, any of which is to
+              be matched.
+
+       -G, --basic-regexp
+              Interpret PATTERN as a basic regular expression (BRE, see below).  This is the default.
+
+       -P, --perl-regexp
+              Interpret the pattern as a Perl-compatible regular expression (PCRE).  This is highly experimental and grep -P may  warn
+              of unimplemented features.
+
+   Matching Control
+       -e PATTERN, --regexp=PATTERN
+              Use  PATTERN  as  the pattern.  If this option is used multiple times or is combined with the -f (--file) option, search
+              for all patterns given.  This option can be used to protect a pattern beginning with “-”.
+
+       -f FILE, --file=FILE
+              Obtain patterns from FILE, one per line.  If this option is used multiple times or is combined with  the  -e  (--regexp)
+              option, search for all patterns given.  The empty file contains zero patterns, and therefore matches nothing.
+
+       -i, --ignore-case
+              Ignore case distinctions in both the PATTERN and the input files.
+
+       -v, --invert-match
+              Invert the sense of matching, to select non-matching lines.
+
+       -w, --word-regexp
+              Select  only  those lines containing matches that form whole words.  The test is that the matching substring must either
+              be at the beginning of the line, or preceded by a non-word constituent character.  Similarly, it must be either  at  the
+              end  of  the line or followed by a non-word constituent character.  Word-constituent characters are letters, digits, and
+              the underscore.
+
+       -x, --line-regexp
+              Select only those matches that exactly  match  the  whole  line.   For  a  regular  expression  pattern,  this  is  like
+              parenthesizing the pattern and then surrounding it with ^ and $.
+
+       -y     Obsolete synonym for -i.
+
+   General Output Control
+       -c, --count
+              Suppress normal output; instead print a count of matching lines for each input file.  With the -v, --invert-match option
+              (see below), count non-matching lines.
+
+       --color[=WHEN], --colour[=WHEN]
+              Surround the matched (non-empty) strings, matching lines, context lines, file names, line  numbers,  byte  offsets,  and
+              separators (for fields and groups of context lines) with escape sequences to display them in color on the terminal.  The
+              colors are defined by the environment variable GREP_COLORS.  The deprecated environment  variable  GREP_COLOR  is  still
+              supported, but its setting does not have priority.  WHEN is never, always, or auto.
+
+       -L, --files-without-match
+              Suppress normal output; instead print the name of each input file from which no output would normally have been printed.
+              The scanning will stop on the first match.
+*** TODO ido,icycle
+*** Monitor
+*** CL
+*** EDE
+*** PDF
+When combined with the abbreviation rule about nil cdrs, we recognize the lists with which
+we're already familiar:
+(a . (b . nil) )
+(a b . nil) - (a b)
+Generally speaking, a Lisp list is a chain of cons cells where each cdr is another cons cell and
+the last cdr is nil. It doesn't matter
+*** One day:
+**** semantic
+**** SREncode
+     :LOGBOOK:
+     CLOCK: [2017-03-09 Thu 12:29]--[2017-03-09 Thu 13:03] =>  0:34
+     :END:
+* TODO 
+* 
+* 
+
+ 
+
+
+
+* TODO Haskell
+** kolejne etapy analizy: GHC Core, STG: http://bgamari.github.io/posts/2015-01-19-understanding-ghc-core.html
+                                         http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=D90B9D3614C91161D8A97D8A3157C2AE?doi=10.1.1.53.3729&rep=rep1&type=pdf
+
+* OBINL
+
+** pomysly
+*** znajdowanie recznych tlumaczen w celu sprecyzowania znaczenia
+** narzedzia:
+WALS, dbpedia, FrameNEt, WordNet
+type inference on noisy data
+SUMO DOLCE gist BFOtttty
+*** RDF/Turtle
+@prefix dbpedia :
+<http :// dbpedia .org/ ontology /> .
+@prefix resource : <http :// dbpedia .org/ resource /> .
+
+resource :Pelé dbpedia :team resource : Santos_FC .
+resource :Pelé dbpedia : fullname " Edison Arantes do Nascimento "@en .
+resource :Pelé dbpedia : birthDate "1940 -10 -23"^^ xsd:date .
+^^datatype
+resource :Pelé dbpedia : fullname " Edison Arantes do Nascimento "@en ;
+dbpedia :team resource : Santos_FC ,
+
+resource : Bauru_Atlético_Clube ,
+resource : Brazil_national_football_team .
+
+
+resource :Pelé dbpedia : fullname " Edison Arantes do Nascimento "@en ;
+dbpedia :team resource : Santos_FC ,
+resource : Bauru_Atlético_Clube ,
+resource : Brazil_national_football_team .
+
+resource :Pelé
+dbpedia : careerStation resource :Pelé__2 .
+resource :Pelé__2 dbpedia : numberOfGoals "589" .
+
+https://www.w3.org/2007/02/turtle/primer/
+*** logika
+Goal < E InMatch.Match
+tlumaczac na predykaty:
+Goal(g)->  E m: Match(m) & InMatch(m,g)
+?property chains
+<= n R.C - |{x:R(x,y)^C(x)}|<n
+
+* deduktor-idee
+** znajdowanie falszywych regul i przeslanek przez wyciaganie wnioskow tak dlugo az dojdzie do falszu (traceback!) :debugger:
+czy z rodzaju bledu mozna wywnioskowac korekcje?
+czy mozna zastosowac bisekcje w celu znalezienia bledu?
+** integracja z bibliotekami matematycznymi Haskella/Ocamla
+** rozmyte znajdowanie hierarchii, implikacji
+** relacje pomiedzy schematami poprzez typy zalezne, produkty kategorii
+
+ 
+* Vaterlink 
+** definicje (declarative)
+** algorytmy
+** reprezentacje
+** zastosowania-dalsze kroki
+*** zapisywanie przetworzonych wartosci w postaci binarnej i czytelnej dla czlowieka -zobaczyc flymake?
+zapisywanie wejsc i wyjsc z funkcji dla danych wejsciowych z dokumentacji (takze jesli funkcja zostala wywolana "po drodze")
+*** domyslne prezentacje dla roznych typow danych (np. wykres)
+** dedukcje
+** symulacje
+
+* Footnotes
+
+[fn:stopa] 
+
+[fn:1]
+
+ 
+
+
+* Tasks
+

@@ -1,0 +1,400 @@
+* plan
+** 1 python w emacsie
+** tagi, indeksowanie tekstow
+*** nlp
+narzedzia
+http://www.coli.uni-saarland.de/~csporled/page.php?id=tools
+** indeksowanie trace'ow (suggest.el)
+*** kythe?
+** wyswietlanie podpowiedzi: company, helm
+
+* workflow
+** compilers
+*** shared
+gcc -shared -fPIC -IDMTCP_ROOT/dmtcp/include -o PLUGIN1.so PLUGIN1.c
+*** library link -l
+LD PRELOAD=libdmtcp.so a.out
+
+gcc ... -o PLUGIN1.so PLUGIN1.c -lglx.so
+
+For this program to be aware of DMTCP, it must be compiled with -fPIC and -ldl :
+gcc -fPIC -IDMTCP ROOT/dmtcp/include -o myapp myapp.c -ldl
+** recommenders, SANDBOXING - threads? cow?
+*** suggest.el
+*** criu
+**** docker
+**** incremental dump 
+mkdir -p <path-to-images>/1/
+# criu dump --tree <pid> --images-dir <path-to-images>/1/ --leave-running --track-mem
+
+  * Images are put into the 1/ sub-directory, since we're about to create the 2nd (and more) incremental dumps and it's handy to store
+    them in this way;
+  * The --leave-running option is used to make criu not kill the tasks after dump, but let them run further;
+  * The --track-mem option makes criu ask kernel to monitor memory changes to optimize the subsequent dump.
+
+Create the second dump[edit]
+
+# mkdir <path-to-images>/2/
+# criu dump --tree <pid> --images-dir <path-to-images>/2/ --leave-running --track-mem --prev-images-dir ../1/
+
+  * Note, that the --prev-images-dir path is relative to the --images-dir one;
+  * Similarly the 3rd and all the other dumps can be created.
+
+Create the last dump[edit]
+
+# mkdir <path-to-images>/N/
+# criu dump --tree <pid> --images-dir <path-to-images>/N/ --track-mem --prev-images-dir ../N-1/
+
+  * No --leave-running option will make tasks be killed after dump;
+  * No need in memory tracking option.
+
+Restore[edit]
+
+Now you can restore the processes from whatever images you want
+
+# criu restore --images-dir <path-to-images>/ANY/
+**** dedup
+deduplicate such data by punching holes
+in image files (using fallocate() syscall with FALLOC_FL_PUNCH_HOLE flag), effectively freeing used disk space.
+The --auto-dedup option can be used for criu dump, criu pre-dump and criu page-server
+**** incremental migration
+criu pre-dump --tree <pid> --images-dir <path-to-existing-directory-A>
+
+The directory with images can be on a shared storage, or you can use disk-less migration to avoid the Copy step.
+
+Now you can either proceed to next step and do regular dump, or perform the pre-dump step again. In the latter case pre-dump would
+generate another set of pre-dump images which will contain memory changed after previous pre-dump. Doing several pre-dump iterations may
+reduce the amount of data dumped on dump stage and thus lead to shorter freeze time.
+
+Note, that if you're going to perform more than one pre-dump steps, you should create different directories for images and properly
+reference them with the --images-dir and the --prev-images-dir for all pre-dump and dump steps.
+
+Dump[edit]
+
+Now you can do regular dump of your processes.
+
+[src]# criu dump --tree <pid> --images-dir <path-to-existing-directory-B> \
+ --prev-images-dir <path-to-directory-A-relative-to-B> --leave-stopped --track-mem
+
+Note that:
+
+ 1. this dump would work faster than without pre-dump, as this dump only takes the memory that has changed since the last pre-dump;
+ 2. the --prev-images-dir should contain path to the directory with pre-dump images relative to the directory where the dump images will
+    be put.
+
+Copy[edit]
+
+Copy images to the destination node:
+
+[src]# scp -r <path-to-images-dir> <dst>:/<path-to-images>
+
+Restore[edit]
+
+On the destination node restore the apps from images:
+
+[dst]# criu restore --tree <pid> --images-dir <path-to-images>
+
+Kill[edit]
+
+If everything went OK you can kill stopped tasks on the source node:
+
+[src]# FIXME put command here
+***** diskless
+     dst# mount -t tmpfs none <dir>
+src# mount -t tmpfs none <dir>
+
+Run page server[edit]
+
+Launch a page server on the destination node. The page server will accept pages from criu and will put them into the tmpfs mount. Since
+we're about to run the apps on the destination node, it will have to bear with this memory consumption. The source node will not have to
+store these images.
+
+dst# criu page-server --images-dir <dir> --port <port>
+
+Now, page server will wait for incoming connections to write the applications' memory to the <dir>. When doing iterative migration, you
+can make page server to automatically drop duplicated pages by using --auto-dedup option. See the incremental dumps article for details.
+
+criu dump[edit]
+
+Dump the applications, just like it would have been done when doing live migration, but with options explaining to criu where the page
+server is:
+
+src# criu dump --tree <pid> --images-dir <dir> --leave-stopped --page-server --address <dst> --port <port>
+
+Copy images[edit]
+
+Copy the rest of images onto the destination node:
+
+src# scp -r <dir> <dst-node>/<dir>
+dst# criu restore --tree <pid> --images-dir <dir>
+
+Cleanup tmpfs[edit]
+
+Kill the tmpfs mount with old images. It's no longer required.
+
+dst# umount <dir>
+**** 
+
+*** suggest
+*** "answer set", passp
+*** criu - openvz?
+*** dmtcp 
+    ./configure --enable-unique-checkpoint-filenames  --enable-ptrace --enable-debug
+They are invoked at the beginning of a DMTCP computation as command-line options:
+dmtcp launch --with-plugin PLUGIN1.so:PLUGIN2.so myapp
+**** dmtcp db + emacs read eval print?
+**** hbict -incremental
+**** zmienne   
+      + DMTCP_CHECKPOINT_INTERVAL=<time in seconds> (default: 0, disabled)
+      + DMTCP_COORD_PORT=<coordinator listener port> (default: 7779)
+      + DMTCP_CHECKPOINT_DIR=<where restart script is written> (default: ./)
+      + DMTCP_TMPDIR=<where temporary files are written> (default: environment variable TMPDIR or /tmp)
+ 2. dmtcp_launch / dmtcp_restart:
+   
+      + DMTCP_COORD_HOST=<hostname where coordinator will run> (default: localhost)
+      + DMTCP_COORD_PORT=<coordinator listener port> (default: 7779)
+      + DMTCP_GZIP=<0: disable compression of checkpoint image> (default: 1, compression enabled)
+      + DMTCP_CHECKPOINT_DIR=<location to store checkpoints> (default: ./)
+      + DMTCP_SIGCKPT=<internal signal number> (default: 12(SIGUSR2))
+      + DMTCP_TMPDIR=<where temporary files are written> (default: environment variable TMPDIR or /tmp)
+ 3. `dmtcp_command:
+   
+      + DMTCP_COORD_HOST=<hostname where coordinator will run> (default: localhost)
+      + DMTCP_COORD_PORT=<coordinator listener port> (default: 7779)
+
+*** elisp-sandbox
+->erbot
+*** cask-sandbox                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+*** python sandbox
+**** cow -thread?
+
+** debug
+! -Wall -zawsze
+-fno-inline  reasonable compromise is to use -O
+-fno-stack-protector
+*** valgrind
+ --read-inline-info=yes instructs Valgrind                
+ valgring --trace-children=yes
+ -v option -verbose
+ -v -v -even more
+**** log-file log-port log-socket
+--log-file=filename. There are special format     
+    specifiers that can be used to use a process ID or an environment variable name in the log file name. These are useful/necessary if  
+    your program invokes multiple processes (especially for MPI programs). See the basic options section for more details.               
+                                                                                                                                         
+ 3. The least intrusive option is to send the commentary to a network socket. The socket is specified as an IP address and port number   
+    pair, like this: --log-socket=192.168.0.1:12345
+**** suppression
+{                                                                                                                                        
+  __gconv_transform_ascii_internal/__mbrtowc/mbtowc                                                                                      
+  Memcheck:Value4                                                                                                                        
+  fun:__gconv_transform_ascii_internal                                                                                                   
+  fun:__mbr*toc                                                                                                                          
+  fun:mbtowc                                                                                                                             
+}
+**** debug vex      export VALGRIND_LAUNCHER=/usr/local/bin/valgrind                                                                                   
+
+                                                                                                                                         
+ 2. Then run gdb <prefix>/lib/valgrind/<platform>/<tool>:                                                                                
+                                                                                                                                         
+      gdb /usr/local/lib/valgrind/ppc32-linux/lackey                                                                                     
+                                                                                                                                         
+ 3. Do handle SIGSEGV SIGILL nostop noprint in GDB to prevent GDB from stopping on a SIGSEGV or SIGILL:                                  
+                                                                                                                                         
+      (gdb) handle SIGILL SIGSEGV nostop noprint                                                                                         
+                                                                                                                                         
+ 4. Set any breakpoints you want and proceed as normal for GDB:                                                                          
+                                                                                                                                         
+      (gdb) b vgPlain_do_exec                                                                                                            
+                                                                                                                                         
+    The macro VG_(FUNC) is expanded to vgPlain_FUNC, so If you want to set a breakpoint VG_(do_exec), you could do like this in GDB.     
+                                                                                                                                         
+ 5. Run the tool with required options:                                                                                                  
+                                                                                                                                         
+      (gdb) run `pwd`                                                                                                                    
+                                                                                                                                         
+GDB may be able to give you useful information. Note that by default most of the system is built with -fomit-frame-pointer, and you'll   
+need to get rid of this to extract useful tracebacks from GDB.                                                                           
+                                                                                                                                         
+2.2.9.3. IR Instrumentation Problems                                                                                                     
+                                                                                                                                         
+If you are having problems with your VEX IR instrumentation, it's likely that GDB won't be able to help at all. In this case, Valgrind's 
+--trace-flags option is invaluable for observing the results of instrumentation.                                                         
+
+
+{                                                                                                                                        
+  libX11.so.6.2/libX11.so.6.2/libXaw.so.7.0                                                                                              
+  Memcheck:Value4                                                                                                                        
+  obj:/usr/X11R6/lib/libX11.so.6.2                                                                                                       
+  obj:/usr/X11R6/lib/libX11.so.6.2                                                                                                       
+  obj:/usr/X11R6/lib/libXaw.so.7.0                                                                                                       
+}                                                                                                                                        
+
+**** cpp
+    Important note: C++ function names must be mangled
+** tracing
+*** babeltrace
+*** traecompass
+*** gdb traces + .gdbinit 
+*** crossref? BTF, CTF, Neo4j
+*** hooks advice
+hookifysignalsignal
+therapy
+hookifysignal
+therapy
+hookify
+el-patch
+signal
+org-dp
+
+
+  * `org-dp-create': create a new Org element by building its internal representation
+   
+  * `org-dp-rewire': modify (and maybe transform) an existing Org element by changing its internal representation
+   
+  * `org-dp-map': map elements in a buffer and 'rewire' them
+   
+and 1 command as generic UI
+
+  * `org-dp-prompt': universal function for getting user info
+
+The following more 'private' functions and commands are used by the core/UI functions, but might be useful by themselves
+
+  * `org-dp-contents': get content of (local) element
+   
+  * `org-dp-in': return position-info if inside element, nil otherwise (not yet implemented)
+   
+  * `org-dp-prompt-all': workhorse function for prompting the user
+   
+  * `org-dp-prompt-for-src-block-props': prompt user for src-block properties (adapted from ob-core.el)
+   
+Note that the src-block parameters are appended to the src-block's headline. If you rather want them as separate #+header: lines on top
+of the src-block you can use `org-dp-toggle-headers' from org-dp-lib.el for swapping headers and parameters.
+
+ Examples
+
+ Create Src-Block
+
+#+BEGIN_SRC emacs-lisp
+  (org-dp-create 'src-block nil nil
+                 '(:name "ex1" :header (":cache no" ":noweb yes"))
+                 :language "picolisp"
+                 :preserve-indent 1
+                 :parameters ":results value"
+                 :value "(+ 2 2)")
+#+END_SRC
+
+#+RESULTS:
+: #+NAME: ex1
+: #+HEADER: :noweb yes
+: #+HEADER: :cache no
+: #+BEGIN_SRC picolisp :results value
+: (+ 2 2)
+: #+END_SRC
+
+#+NAME: ex1
+#+HEADER: :noweb yes
+#+HEADER: :cache no
+#+BEGIN_SRC picolisp :results value
+(+ 2 2)
+#+END_SRC
+
+ Transform Src-Block into Example Block
+
+#+NAME: ex2
+#+HEADER: :results raw
+#+BEGIN_SRC emacs-lisp  :exports both
+ (org-dp-rewire 'example-block) 
+#+END_SRC
+
+#+results: ex2
+#+BEGIN_EXAMPLE
+(org-dp-rewire 'example-block) 
+#+END_EXAMPLE
+
+ Transform Src-Block into Headline
+
+#+NAME: ex2
+#+HEADER: :results raw
+#+BEGIN_SRC emacs-lisp :cache no :noweb yes
+  (org-dp-rewire 'headline
+                 (lambda (_cont_ elem)
+                   (concat
+                    "This was an\n\n"
+                    (org-element-property :language elem)
+                    "\n\nsrc-block with header args\n\n"
+                    (org-element-property :parameters elem)
+                    "\n\nbefore."))
+                    'append '(:name "transformed Src-Block")
+                    :level 1
+                    :title (lambda (_old_ elem)
+                             (mapconcat
+                              'upcase
+                              (split-string
+                               (car
+                                (org-element-property :header elem))
+                                ":")
+                              " "))
+                    :tags (lambda (_old_ elem)
+                            (list (org-element-property :name elem)))
+                    :header nil)
+#+END_SRC
+
+#+NAME: transformed Src-Block
+** sandboxin
+**** gdb
+***** jassert broken -> call gdb
+DMTCP_ABORT_ON_FAILED_ASSERT=1 bin/dmtcp_launch a.out
+   gdb a.out core
+
+**** applic-initiated-ckpt -program sam wywoluje ckpt, example-db - baza danych
+*** el-patch?
+** parsing/compiling/tagging:
+*** byte-compile - jak sie dobrac do tych struktur
+*** cedet-edebug, wisent, semantic
+*** e
+*** doxygen
+*** global
+*** kythe
+**** gdb - qXfer:btrace:read? 
+     gdb zlinkowane z expat
+*** pygments - nlp?
+** diagramy
+***  impatient albo to drugie
+**** webkit+dbus
+**** org-mind-map + polymode? tree +polymode?
+**** backend:freemind,emacsql
+** nlp
+*** opensemanticsearch 
+*** nltk
+*** 
+** bazy danych
+*** tagi - crossref miedzy roznymi typami
+**** xref 
+**** pygments mixing
+**** freex, emacsql
+**** neo4j
+** gui
+*** tree + polymode
+*** winner + historia + tagi
+*** popwin 
+*** company
+*** helm
+*** kroki: ecukes espuds
+*** mouse
+suggestion-box
+pos-tip
+suggestion-box
+clippy
+
+** parallel
+** coding
+*** pymacs
+**** nltk
+**** scikit
+**** tensorflow
+*** pythonic
+*** lispy+paxedit
+*** debug, edebug -> emacsql,hash
+*** steps -ecukes espuds
+*** 

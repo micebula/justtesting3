@@ -1,0 +1,67 @@
+* CZEsc CO tam
+** no
+** co to
+*** co
+* MARK
+  ** C-M-t zamienic dwa slowa albo dwa sexpy
+  ** ??? yank-pop / kill-ring -projektowanie YANK-POP opisane w dokumentacji
+  ** C-SPC -Set the mark at point, and activate it (set-mark-command.
+  ** C-x C-xasvd Set the mark at point, and activate it; then move point where the mark used to be (exchange-point-and-mark).
+  ** C-M-@ Set mark after end of following balanced expression (mark-sexp). This does not move point.
+  ** M-h Move pogdint to the beginning of thecurrentparagraph, and set mark at the end (mark-paragraph).
+
+  ** C-M-h Move point to the beginning of the current defun, and set mark at the end (mark-defun).
+** M-% Replace text witgghin mark using M-%(seeQuerypasvd Replace).
+
+* also
+  ** https://github.com/politza/pdf-tools
+   :PROPERTIES:
+   :ORDERED:  t
+   :END:
+
+
+
+
+
+C-SPC C-SPC Set the mark, pushing it onto the mark ring, without activating it.
+
+C-u C-SPC Move point to where the mark was, and restore the mark from the ring of former marks. 
+
+
+
+C-x r SPC w Record the position of point and the current buffer in register w (point-to-register).
+
+C-x r j w     Jump to the position and buffer saved in register w (jump-to-register).
+
+
+
+org-mode
+M-RET
+Insert new heading with same level as current.  If the cursor is in a plain list
+item, a new item is created (see
+Section 2.7 [Plain lists], page 4
+).  When thM-left
+/
+right
+Promote/demote current heading by one level.
+M-S-left
+/
+right
+Promote/demote the current subtree by one level.
+M-S-up
+/
+down
+Move subtree up/down (swap with previous/next subtree of same level).
+C-c C-w
+Refile entry or region to a different location.  See
+Section 9.2 [Refile and copy],
+page 20
+.
+C-x n s/w
+Narrow buffer to current subtree / widen it again
+  https://www.gnu.org/software/gtypist/doc/gtypist.html#Introduction
+  lkdklsdkadaldakldkal
+
+fsd					    ajlfkdsjkladskljfalkjfkalkf
+
+;ls					    kkakda;kfkaf;lakfl;kafl;akfk;a;fka;fka;fk
