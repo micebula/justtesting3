@@ -1,0 +1,1 @@
+/usr/bin/wget --directory-prefix=/home/a/data/db/88f525-5b1e-4227-aaad-33568dc804b6/2017-10-27T02:55:46+0200// "-e robots=off" --page-requisites --adjust-extension --convert-links https://github.com/abo-abo/hydra/wiki/Org-mode-links
